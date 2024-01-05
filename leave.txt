@@ -1,0 +1,43 @@
+if($updateType == "leaveStatus" && $methodType === 'POST'){
+	$leaveId = $jsonData->leaveId;
+	$status = $jsonData->status;
+	
+	$updateDevice = "update `LeaveMaster` set `Status` = $status where `Id` = $leaveId ";
+	$output = "";
+	if(mysqli_query($conn,$updateDevice)){
+		$output -> responseCode = "100000";
+		$output -> responseDesc = "Successfully update";
+
+        $sql = "SELECT e.Name, e.EmailId, e.Mobile, l.FromDate, l.ToDate FROM LeaveMaster l join EmployeeMaster e on l.EmpId = e.EmpId where l.Id = $leaveId";
+        $query = mysqli_query($conn,$sql);
+        $row = mysqli_fetch_assoc($query);
+
+        $name = $row["Name"];
+		$toMailId = $row["EmailId"];
+        $mobile = $row["Mobile"];
+        $fromDate = $row["FromDate"];
+        $fromDate = date("d-M-Y", strtotime($fromDate));
+        $toDate = $row["ToDate"];
+        $toDate = date("d-M-Y", strtotime($toDate));
+		// $subject = "Leave - ".$leaveId;
+        $subject = "Leave - from ".$fromDate.' to '.$toDate;
+		$msg = "Dear $name,"."<br>";
+		if($status == 1)
+			$msg .= "Your leave is Approved.";
+		else
+			$msg .= "Your leave is Rejected.";
+
+        $classObj = new SendMailClass();
+        $mailStatus = $classObj->sendMail($toMailId, $subject, $msg, null);
+
+        $leaveStatus = $status == 1 ? "Approved" : "Rejected";
+        $insertNotification = "INSERT INTO `Notification`(`Mobile`, `Subject`, `Body`) VALUES ('$mobile','Leave','From $fromDate to $toDate is $leaveStatus')";
+        mysqli_query($conn,$insertNotification);
+
+	}
+	else{
+		$output -> responseCode = "0";
+		$output -> responseDesc = "Something wrong";
+	}
+	echo json_encode($output);
+}

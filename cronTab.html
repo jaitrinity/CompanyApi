@@ -1,0 +1,23 @@
+<script type="text/javascript">
+  function myCrontab(){
+    var apiUrl = 'https://trinityapplab.in/Company/startStopMail.php';
+    fetch(apiUrl).then(response => {
+      return response.json();
+    }).then(data => {
+      // Work with JSON data here
+      console.log(data);
+    }).catch(err => {
+      // Do something for an error here
+    });
+    // alert("ok");
+  }
+  var now = new Date();
+  var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 30, 0, 0) - now;
+  if (millisTill10 < 0) {
+       millisTill10 += 86400000; // it's after 10am, try 10am tomorrow.
+  }
+  setTimeout(function(){myCrontab();}, millisTill10);
+</script>
+<body>
+  Hi, Please don't close this tab.
+</body>
