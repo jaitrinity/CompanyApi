@@ -466,6 +466,8 @@ class NewAssign1{
 		$response -> tabName = 'Pending';
 		$response -> menu = $wrappedListArray;
 
+		// file_put_contents('/var/www/trinityapplab.in/html/Company/log/NewAssign1_'.date("Y-m-d").'.log', date("Y-m-d H:i:s").' '.json_encode($response)."\n", FILE_APPEND);
+
 		return $response;
 	}
 

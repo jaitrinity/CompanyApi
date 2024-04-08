@@ -122,6 +122,9 @@ class SubmittedClass{
 		$response = new StdClass;
 		$response -> tabName ='Completed';
 		$response -> menu = $submitList;
+
+		// file_put_contents('/var/www/trinityapplab.in/html/Company/log/Submitted_'.date("Y-m-d").'.log', date("Y-m-d H:i:s").' '.json_encode($response)."\n", FILE_APPEND);
+		
 		return $response;
 	}
 

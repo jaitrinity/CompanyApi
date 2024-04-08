@@ -183,6 +183,42 @@ $chkpointSql = "SELECT * FROM `Checkpoints` WHERE `CheckpointId` in ($cpIds)";
 		    }
 		    mysqli_stmt_close($stmt);
 		}
+		else if($chkpointRow['IsSql'] == 2){
+			$valueSql = $chkpointRow["Value"];
+			// $stmt = $conn->prepare($valueSql);
+			// $stmt->bind_param("i",$roleId);
+			// $stmt->execute();
+			// $kpiQuery = $stmt->get_result();
+			// $rowCount = mysqli_num_rows($kpiQuery);
+			// if($rowCount !=0){
+			// 	$kpiRow = mysqli_fetch_assoc($kpiQuery);
+			// 	$kpiValue = $kpiRow["KPI"];
+			// 	$json -> value = $kpiValue;
+			// }
+			// else{
+			// 	$json -> value = "";
+			// }
+			
+
+
+		    $stmt = mysqli_prepare($conn,$valueSql);
+		    mysqli_stmt_bind_param($stmt, 'i', $roleId);
+		    mysqli_stmt_execute($stmt);
+		    mysqli_stmt_store_result($stmt);
+		    mysqli_stmt_bind_result($stmt,$project);
+		    if(mysqli_stmt_num_rows($stmt) > 0){
+		       $kpiValue = "";
+		       while($v = mysqli_stmt_fetch($stmt)){
+		       		$kpiValue = $project;
+		       }
+		       $json -> value = $kpiValue; 
+			
+		    }
+		    else{
+		        $json -> value = "";    
+		    }
+		    mysqli_stmt_close($stmt);
+		}
 		else{
 		    $json -> value = $chkpointRow["Value"];    
 		}
@@ -277,6 +313,42 @@ $chkpointSql = "SELECT * FROM `Checkpoints` WHERE `CheckpointId` in ($cpIds)";
 					            array_push($valueArray,$project);
 					       }
 					       $logicJson -> value =implode(',',$valueArray); 
+						
+					    }
+					    else{
+					        $logicJson -> value = "";    
+					    }
+					    mysqli_stmt_close($stmt);
+					}
+					else if($logicRow['IsSql'] == 2){
+						$valueSql = $logicRow["Value"];
+						// $stmt = $conn->prepare($valueSql);
+						// $stmt->bind_param("i",$roleId);
+						// $stmt->execute();
+						// $kpiQuery = $stmt->get_result();
+						// $rowCount = mysqli_num_rows($kpiQuery);
+						// if($rowCount !=0){
+						// 	$kpiRow = mysqli_fetch_assoc($kpiQuery);
+						// 	$kpiValue = $kpiRow["KPI"];
+						// 	$logicJson -> value = $kpiValue;
+						// }
+						// else{
+						// 	$logicJson -> value = "";
+						// }
+						
+
+
+					    $stmt = mysqli_prepare($conn,$valueSql);
+					    mysqli_stmt_bind_param($stmt, 'i', $roleId);
+					    mysqli_stmt_execute($stmt);
+					    mysqli_stmt_store_result($stmt);
+					    mysqli_stmt_bind_result($stmt,$project);
+					    if(mysqli_stmt_num_rows($stmt) > 0){
+					       $kpiValue = "";
+					       while($v = mysqli_stmt_fetch($stmt)){
+					       		$kpiValue = $project;
+					       }
+					       $logicJson -> value = $kpiValue; 
 						
 					    }
 					    else{

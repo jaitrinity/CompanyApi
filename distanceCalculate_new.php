@@ -1,20 +1,29 @@
 <?php
-include("dbConfiguration.php");
-require 'AddressByLatLongClass.php';
+$conn = mysqli_connect("localhost","db","P@ssw0rd","Company");
+// include("dbConfiguration.php");
+// require 'AddressByLatLongClass.php';
 $api_key = "AIzaSyDkCjzv4fVu7wlsp31Tu0AnpbyQaxm4Kz8";
 
-$yesterdayDate = date('Y-m-d', strtotime('-1 day'));
-// $filterEmpId = 'tr033';
-// $yesterdayDate = '2024-01-27';
+// $yesterdayDate = date('Y-m-d', strtotime('-1 day'));
+$filterEmpId = 'tr034';
+$yesterdayDate = '2024-01-10';
 
 // $delSql = "DELETE FROM `DistanceTravel` where `Emp_Id` = '$filterEmpId' and `Visit_Date` = '$yesterdayDate'";
-$delSql = "DELETE FROM `DistanceTravel` where `Visit_Date` = '$yesterdayDate'";
-mysqli_query($conn,$delSql);
-$successArr = array();
-$errorArr = array();
+// $delSql = "DELETE FROM `DistanceTravel` where `Visit_Date` = '$yesterdayDate'";
+// mysqli_query($conn,$delSql);
+// $successArr = array();
+// $errorArr = array();
 
-// $sql = "SELECT `EmpId` FROM `EmployeeMaster` WHERE `EmpId`='$filterEmpId' and `IsActive`=1 and `Tenent_Id`=1 ";
-$sql = "SELECT `EmpId` FROM `EmployeeMaster` WHERE `IsActive`=1 and `Tenent_Id`=1 ";
+$totalDistance =0;
+$table = "<table border=1>";
+$table .= "<thead>";
+$table .= "<tr>";
+$table .= "<th>Activity_Id</th><th>Emp_Id</th><th>Visit_Date</th><th>Visit_Date_Time</th><th>Latitude_Start</th><th>Longitude_Start</th><th>Latitude_End</th><th>Longitude_End</th><th>Address</th><th>Distance_KM</th><th>Event</th>";
+$table .= "</tr>";
+$table .= "</thead>";
+$table .= "<tbody>";
+$sql = "SELECT `EmpId` FROM `EmployeeMaster` WHERE `EmpId`='$filterEmpId' and `IsActive`=1 and `Tenent_Id`=1 ";
+// $sql = "SELECT `EmpId` FROM `EmployeeMaster` WHERE `IsActive`=1 and `Tenent_Id`=1 ";
 $query=mysqli_query($conn,$sql);
 while($row = mysqli_fetch_assoc($query)){
 	$empId = $row["EmpId"];
@@ -37,8 +46,8 @@ while($row = mysqli_fetch_assoc($query)){
 		$longitude= explode(",", $geoLocation)[1];
 		$address = NULL;
 		if($event == "Start" || $event == "Submit" || $event == "Stop"){
-			$classObj = new AddressByLatLongClass();
-			$address = $classObj->getAddressByLatLong($latitude, $longitude);
+			// $classObj = new AddressByLatLongClass();
+			// $address = $classObj->getAddressByLatLong($latitude, $longitude);
 			// $address = "";
 		}
 		$cnt=$cnt+1;
@@ -58,13 +67,18 @@ while($row = mysqli_fetch_assoc($query)){
 			}
 			// echo $json_data.'1--------';
 			// echo $distance.', ';
-			$distanceSql = "INSERT into `DistanceTravel` (`Activity_Id`, `Emp_Id`, `Visit_Date`, `Visit_Date_Time`, `Latitude_Start`, `Longitude_Start`, `Latitude_End`, `Longitude_End`, `Address`, `Distance_KM`, `Event`) values ('$actId', '$empId', '$yesterdayDate', '$mobileDateTime', '$origin_lat', '$origin_long', '$dest_lat', '$dest_long', '$address', '$distance', '$event')";
-			if(mysqli_query($conn,$distanceSql)){
-				array_push($successArr, $empId);
-			}
-			else{
-				array_push($errorArr, $empId);
-			}
+			// $distanceSql = "INSERT into `DistanceTravel` (`Activity_Id`, `Emp_Id`, `Visit_Date`, `Visit_Date_Time`, `Latitude_Start`, `Longitude_Start`, `Latitude_End`, `Longitude_End`, `Address`, `Distance_KM`, `Event`) values ('$actId', '$empId', '$yesterdayDate', '$mobileDateTime', '$origin_lat', '$origin_long', '$dest_lat', '$dest_long', '$address', '$distance', '$event')";
+			// if(mysqli_query($conn,$distanceSql)){
+			// 	array_push($successArr, $empId);
+			// }
+			// else{
+			// 	array_push($errorArr, $empId);
+			// }
+
+			$table .= "<tr>";
+			$table .= "<td>$actId</td> <td>$empId</td> <td>$yesterdayDate</td> <td>$mobileDateTime</td> <td>$origin_lat</td> <td>$origin_long</td> <td>$dest_lat</td> <td>$dest_long</td> <td>$address</td> <td>$distance</td> <td>$event</td>";
+			$table .= "</tr>";
+			$totalDistance += $distance;
 		}
 		else
 		{
@@ -81,13 +95,19 @@ while($row = mysqli_fetch_assoc($query)){
 				}
 				// echo $json_data.'2--------';
 				// echo $distance.', ';
-				$distanceSql = "INSERT into `DistanceTravel` (`Activity_Id`, `Emp_Id`, `Visit_Date`, `Visit_Date_Time`, `Latitude_Start`, `Longitude_Start`, `Latitude_End`, `Longitude_End`, `Address`, `Distance_KM`, `Event`) values ('$actId', '$empId', '$yesterdayDate', '$mobileDateTime', '$origin_lat', '$origin_long', '$dest_lat', '$dest_long', '$address', '$distance', '$event')";
-				if(mysqli_query($conn,$distanceSql)){
-					array_push($successArr, $empId);
-				}
-				else{
-					array_push($errorArr, $empId);
-				}
+				// $distanceSql = "INSERT into `DistanceTravel` (`Activity_Id`, `Emp_Id`, `Visit_Date`, `Visit_Date_Time`, `Latitude_Start`, `Longitude_Start`, `Latitude_End`, `Longitude_End`, `Address`, `Distance_KM`, `Event`) values ('$actId', '$empId', '$yesterdayDate', '$mobileDateTime', '$origin_lat', '$origin_long', '$dest_lat', '$dest_long', '$address', '$distance', '$event')";
+				// if(mysqli_query($conn,$distanceSql)){
+				// 	array_push($successArr, $empId);
+				// }
+				// else{
+				// 	array_push($errorArr, $empId);
+				// }
+				$table .= "<tr>";
+				$table .= "<td>$actId</td> <td>$empId</td> <td>$yesterdayDate</td> <td>$mobileDateTime</td> <td>$origin_lat</td> <td>$origin_long</td> <td>$dest_lat</td> <td>$dest_long</td> <td>$address</td> <td>$distance</td> <td>$event</td>";
+				$table .= "</tr>";
+
+				$totalDistance += $distance;
+
 				$origin=$latitude.",".$longitude;
 				$origin_lat=$latitude;
 				$origin_long=$longitude;
@@ -96,10 +116,16 @@ while($row = mysqli_fetch_assoc($query)){
 		}
 	}
 }
+$table .= "<tr>";
+$table .= "<td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td>$totalDistance</td> <td></td>";
+$table .= "</tr>";
 
-$output = new StdClass;
-$output -> distanceResponse = array('date' => $yesterdayDate, 'successArr' => $successArr, 'errorArr' => $errorArr);
-echo json_encode($output);
+$table .= "</tbody></table>";
+echo $table;
+
+// $output = new StdClass;
+// $output -> distanceResponse = array('date' => $yesterdayDate, 'successArr' => $successArr, 'errorArr' => $errorArr);
+// echo json_encode($output);
 
 // file_put_contents('/var/www/trinityapplab.in/html/Company/log/distanceCalculatelog_'.date("Y").'.log', json_encode($output)."\n", FILE_APPEND);
 

@@ -58,7 +58,7 @@ class PDF extends PDF_Rotate
 		// Position at 1.5 cm from bottom
     	$this->SetY(-15);
 	    $this->SetFont('Times','',12);
-	    $this->Cell(95,5,'Office No: C-313, Noida One, B-8,',0);
+	    $this->Cell(95,5,'Office No: B-417, Noida One, B-8,',0);
 		$this->Cell(95,5,'ayush.agarwal@trinityapplab.co.in',0,0,'R');
 		$this->Ln(5);
 		$this->Cell(95,5,'Sector-62, Noida (UP) - 201309.',0);
@@ -203,7 +203,7 @@ $msg = "<html><body>";
 $msg .= "<p style='font-size : 16px !important'>"."Dear $empName, "."</p>";
 $msg .= "<p style='font-size : 16px !important'>"."Greetings of the day!!!"."</p>";
 $msg .= "<p style='font-size : 16px !important'>"."On behalf of the entire company, I'd like to say that it brings me great pleasure to formally offer you the position of <b>$designation</b> at <b>Trinity Mobile App Lab Pvt</b>. A huge congratulations to you!"."</p>";
-$msg .= "<p style='font-size : 16px !important'>"."Your employment start date is <b>$dayName, $joinDate</b>. You'll be greeted at <b>9:30 A.M. at Office No: C-313, Noida One, B-8,Sector-62, Noida (UP) - 201309</b>. Please arrive a few minutes early on your first day."."</p>";
+$msg .= "<p style='font-size : 16px !important'>"."Your employment start date is <b>$dayName, $joinDate</b>. You'll be greeted at <b>9:30 A.M. at Office No: B-417, Noida One, B-8,Sector-62, Noida (UP) - 201309</b>. Please arrive a few minutes early on your first day."."</p>";
 $msg .= "<p style='font-size : 16px !important'>"."You must print, sign, and scan the form. Please email it back to us by EOD <b>$validDate</b>, to the email address."."<p>";
 $msg .= "<p style='font-size : 16px !important'>"."Directions on how to accept the offer: add an electronic signature (below) or print, sign and scan this letter back to us by EOD <b>$validDate</b>. Scan to the email address at the end of this letter. The offer expires on <b>$validDate</b>."."</p>";
 $msg .= "<p style='font-size : 16px !important'>"."Welcome onboard! If you have questions about anything prior to your first day, don't hesitate to reach out: <a href='mailto:pushkar.tyagi@trinityapplab.co.in'>pushkar.tyagi@trinityapplab.co.in</a>"."</p>";

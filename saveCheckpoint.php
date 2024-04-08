@@ -117,10 +117,11 @@ else{
 					{
 						$answer=$v['value'];
 						$chkp_idArray=explode("_",$v['Chkp_Id']);
-
+						$dependentChpId=0;
 						if(count($chkp_idArray) > 1){
 							// For Dependent Checkpoint
 							$chkp_id = $chkp_idArray[1];
+							$dependentChpId = $chkp_idArray[0];
 							if($chkp_id == 1){
 								$fromDate = $answer;	
 							}
@@ -149,15 +150,16 @@ else{
 							}
 						}	
 						
-						$dependent=$v['Dependent'];
-						if($dependent == ""){
-							$dependent = 0;
-						}
+						// $dependent=$v['Dependent'];
+						// if($dependent == ""){
+						// 	$dependent = 0;
+						// }
 						
 
+						// $insertInTransDtl="INSERT INTO `TransactionDTL` (`ActivityId`,`ChkId`,`Value`,`DependChkId`) VALUES (?,?,?,?)";
 						$insertInTransDtl="INSERT INTO `TransactionDTL` (`ActivityId`,`ChkId`,`Value`,`DependChkId`) VALUES (?,?,?,?)";
 						$stmt = $conn->prepare($insertInTransDtl);
-						$stmt->bind_param("iisi", $activityId, $chkp_id, $answer, $dependent);
+						$stmt->bind_param("iisi", $activityId, $chkp_id, $answer, $dependentChpId);
 						$stmt->execute();
 
 						if($fromDate != "" && $toDate != "" && $reason != ""){
@@ -213,9 +215,10 @@ else{
 				{
 					$answer=$v['value'];
 					$chkp_idArray=explode("_",$v['Chkp_Id']);
-
+					$dependentChpId=0;
 					if(count($chkp_idArray) > 1){
 						$chkp_id = $chkp_idArray[1];
+						$dependentChpId = $chkp_idArray[0];
 					}
 					else{
 						$chkp_id = $chkp_idArray[0];
@@ -224,15 +227,16 @@ else{
 						}
 					}	
 					
-					$dependent=$v['Dependent'];
-					if($dependent == ""){
-						$dependent = 0;
-					}
+					// $dependent=$v['Dependent'];
+					// if($dependent == ""){
+					// 	$dependent = 0;
+					// }
 					
 
+					// $insertInTransDtl="INSERT INTO `TransactionDTL` (`ActivityId`,`ChkId`,`Value`,`DependChkId`) VALUES (?,?,?,?)";
 					$insertInTransDtl="INSERT INTO `TransactionDTL` (`ActivityId`,`ChkId`,`Value`,`DependChkId`) VALUES (?,?,?,?)";
 					$stmt = $conn->prepare($insertInTransDtl);
-					$stmt->bind_param("iisi", $activityId, $chkp_id, $answer, $dependent);
+					$stmt->bind_param("iisi", $activityId, $chkp_id, $answer, $dependentChpId);
 					if($stmt->execute()){
 						$isAllSave = true;
 					}
@@ -288,23 +292,25 @@ else{
 					{
 						$answer=$v['value'];
 						$chkp_idArray=explode("_",$v['Chkp_Id']);
-
+						$dependentChpId=0;
 						if(count($chkp_idArray) > 1){
 							$chkp_id = $chkp_idArray[1];
+							$dependentChpId = $chkp_idArray[0];
 						}
 						else{
 							$chkp_id = $chkp_idArray[0];
 						}	
 						
-						$dependent=$v['Dependent'];
-						if($dependent == ""){
-							$dependent = 0;
-						}
+						// $dependent=$v['Dependent'];
+						// if($dependent == ""){
+						// 	$dependent = 0;
+						// }
 						
 
+						// $insertInTransDtl="INSERT INTO `TransactionDTL` (`ActivityId`,`ChkId`,`Value`,`DependChkId`) VALUES (?,?,?,?)";
 						$insertInTransDtl="INSERT INTO `TransactionDTL` (`ActivityId`,`ChkId`,`Value`,`DependChkId`) VALUES (?,?,?,?)";
 						$stmt = $conn->prepare($insertInTransDtl);
-						$stmt->bind_param("iisi", $activityId, $chkp_id, $answer, $dependent);
+						$stmt->bind_param("iisi", $activityId, $chkp_id, $answer, $dependentChpId);
 						$stmt->execute();
 					}
 					
@@ -317,23 +323,25 @@ else{
 				{
 					$answer=$v['value'];
 					$chkp_idArray=explode("_",$v['Chkp_Id']);
-
+					$dependentChpId=0;
 					if(count($chkp_idArray) > 1){
 						$chkp_id = $chkp_idArray[1];
+						$dependentChpId = $chkp_idArray[0];
 					}
 					else{
 						$chkp_id = $chkp_idArray[0];
 					}	
 					
-					$dependent=$v['Dependent'];
-					if($dependent == ""){
-						$dependent = 0;
-					}
+					// $dependent=$v['Dependent'];
+					// if($dependent == ""){
+					// 	$dependent = 0;
+					// }
 				
 
+					// $insertInTransDtl="INSERT INTO `TransactionDTL` (`ActivityId`,`ChkId`,`Value`,`DependChkId`) VALUES (?,?,?,?)";
 					$insertInTransDtl="INSERT INTO `TransactionDTL` (`ActivityId`,`ChkId`,`Value`,`DependChkId`) VALUES (?,?,?,?)";
 					$stmt = $conn->prepare($insertInTransDtl);
-					$stmt->bind_param("iisi", $activityId, $chkp_id, $answer, $dependent);
+					$stmt->bind_param("iisi", $activityId, $chkp_id, $answer, $dependentChpId);
 					if($stmt->execute()){
 						$isAllSave = true;
 					}

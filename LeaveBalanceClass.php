@@ -1,9 +1,8 @@
 <?php
 class LeaveBalanceClass{
 	public function getLeaveBalance($leaveId){
-		require_once 'dbConfiguration.php';
+		include ('dbConfiguration.php');
 
-		// echo $leaveId;
 		$holiDate = "SELECT `Date` FROM `Holidays`";
 		$holiQuery = mysqli_query($conn,$holiDate);
 		$holiList = array();
@@ -12,7 +11,7 @@ class LeaveBalanceClass{
 			array_push($holiList, $d);
 		}
 
-		$sql = "SELECT * FROM `LeaveMaster` where `Status`=1 and `Id`=$leaveId";
+		$sql = "SELECT * FROM `LeaveMaster` where `IsLeaveBalanceCalculated`=0 and `Status`=1 and `Id`=$leaveId";
 		$query = mysqli_query($conn,$sql);
 		$actualLeave = 0;
 		$row = mysqli_fetch_assoc($query);
@@ -43,8 +42,11 @@ class LeaveBalanceClass{
 			$remainEmpLeave = 0;
 		}
 
-		// $updateRemainLeave = "UPDATE `EmployeeMaster` set `LeaveBalance` = $remainEmpLeave where `EmpId` = '$empId'";
-		// mysqli_query($conn,$updateRemainLeave);
+		$updateRemainLeave = "UPDATE `EmployeeMaster` set `LeaveBalance`=$remainEmpLeave where `EmpId`='$empId'";
+		if(mysqli_query($conn,$updateRemainLeave)){
+			$isLeave = "UPDATE `LeaveMaster` set `IsLeaveBalanceCalculated`=1 where `Id`=$leaveId";
+			mysqli_query($conn,$isLeave);
+		}
 
 		return $remainEmpLeave;
 	}

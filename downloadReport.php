@@ -71,7 +71,18 @@ $currentTime = time();
 	else if($reportType == 3){
 		$filterSql = "";
 		if($loginEmpRoleId != 1){
-			$filterSql .= " and `EmpId` = '$loginEmpId' ";
+			// $filterSql .= " and `EmpId` = '$loginEmpId' ";
+			$empIdList = array();
+			array_push($empIdList, $loginEmpId);
+
+			$empSql = "SELECT `EmpId` FROM `EmployeeMaster` where `RMId`='$loginEmpId' and `IsActive`=1";
+			$empQuery = mysqli_query($conn,$empSql);
+			while($empRow = mysqli_fetch_assoc($empQuery)){
+				array_push($empIdList, $empRow["EmpId"]);
+			}
+
+			$empImp = implode("','", $empIdList);
+			$filterSql .= " and `EmpId` in ('$empImp')";
 		}
 
 		if($fromDate != ''){

@@ -1,5 +1,12 @@
 <?php
 include("dbConfiguration.php");
+$methodType = $_SERVER['REQUEST_METHOD'];
+if($methodType != "POST"){
+	$output = array('code' => 405, 'message' => 'Invalid method Type');
+	echo json_encode($output);
+	return;
+}
+
 $selectType = $_REQUEST["selectType"];
 $json = file_get_contents('php://input');
 $jsonData=json_decode($json);
@@ -784,7 +791,17 @@ else if($selectType == "empMapView"){
 
 	}
 	else{
-		$filterSql .= "and `EmpId` = '$loginEmpId'";
+		$empIdList = array();
+		array_push($empIdList, $loginEmpId);
+
+		$empSql = "SELECT `EmpId` FROM `EmployeeMaster` where `RMId`='$loginEmpId' and `IsActive`=1";
+		$empQuery = mysqli_query($conn,$empSql);
+		while($empRow = mysqli_fetch_assoc($empQuery)){
+			array_push($empIdList, $empRow["EmpId"]);
+		}
+
+		$empImp = implode("','", $empIdList);
+		$filterSql .= "and `EmpId` in ('$empImp')";
 	}
 	$sql = "SELECT `EmpId` as `empId`, `Name` as `empName` FROM `EmployeeMaster` where 1=1 $filterSql and `IsActive`=1 order by `Name`";
 	$query = mysqli_query($conn,$sql);
@@ -796,38 +813,40 @@ else if($selectType == "empMapView"){
 	echo json_encode($output);
 }
 else if($selectType == "attendance"){
-	$underEmpList = array();
+	$filterSql = "";
 	if($loginEmpRoleId == 1){
-		$sql = "SELECT `EmpId` FROM `EmployeeMaster` WHERE `IsActive` = 1";
-		$query=mysqli_query($conn,$sql);
-		while($row = mysqli_fetch_assoc($query)){
-			array_push($underEmpList, $row["EmpId"]);
-		}
+		
 	}
 	else{
-		// for self data
+		$underEmpList = array();
 		array_push($underEmpList, $loginEmpId);
+
+		$empSql = "SELECT `EmpId` FROM `EmployeeMaster` where `RMId`='$loginEmpId' and `IsActive`=1";
+		$empQuery = mysqli_query($conn,$empSql);
+		while($empRow = mysqli_fetch_assoc($empQuery)){
+			array_push($underEmpList, $empRow["EmpId"]);
+		}
+
+		$empIds = implode("','", $underEmpList);
+		$filterSql .= " and `EmpId` in ('".$empIds."')";
 	}
 
-	$empIds = implode("','", $underEmpList);
-
 	$attendanceList = array();
-	$filterSql = "";
 	$filterStartDate = $jsonData->filterStartDate;
 	$filterEndDate = $jsonData->filterEndDate;
 
 	if($filterStartDate != ""){
 		$filterStartDate = str_replace('/', '-', $filterStartDate);
 		$filterStartDate = date("Y-m-d", strtotime($filterStartDate));
-		$filterSql .= " and `AttendanceDate` >= '$filterStartDate' ";
+		$filterSql .= " and `AttendanceDate` >= '$filterStartDate'";
 	}
 	if($filterEndDate != ""){
 		$filterEndDate = str_replace('/', '-', $filterEndDate);
 		$filterEndDate = date("Y-m-d", strtotime($filterEndDate));
-		$filterSql .= " and `AttendanceDate` <= '$filterEndDate' ";
+		$filterSql .= " and `AttendanceDate` <= '$filterEndDate'";
 	}
 
-	$attSql = "SELECT * FROM `Attendance` where `EmpId` in ('".$empIds."') ".$filterSql." ORDER by `AttendanceDate` desc";
+	$attSql = "SELECT * FROM `Attendance` where 1=1 $filterSql ORDER by `AttendanceDate` desc";
 	$attQuery=mysqli_query($conn,$attSql);
 	while($attRow = mysqli_fetch_assoc($attQuery)){
 		$inDateTime = $attRow["InDateTime"] == null ? '' : $attRow["InDateTime"];
