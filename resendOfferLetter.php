@@ -138,15 +138,14 @@ function sendMail($toMailId, $msg, $attachment){
     
     // To mail's
     $mail->addAddress($toMailId);
-    // $mail->addAddress("pushkar.tyagi@trinityapplab.co.in");
 
     $mail->setFrom("communication@trinityapplab.co.in","Trinity");
     $mail->addAttachment($attachment);
     $mail->isHTML(true);   
 
     // CC mail's
-    // $mail->addCC('helpdesk@trinityapplab.co.in');
-    // $mail->addCC('anupama@nvgroup.co.in');
+    $mail->addCC('shruti@trinityapplab.co.in');
+    $mail->addCC('ayush.agarwal@trinityapplab.co.in');
     
     // BCC mail's
     // $mail->addBCC("jai.prakash@trinityapplab.co.in");

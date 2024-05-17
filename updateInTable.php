@@ -74,7 +74,7 @@ else if($updateType == "interviewee" && $methodType === 'POST'){
         }
         $subject = "Interview result";
         $classObj = new SendMailClass();
-        $mailStatus = $classObj->sendMail($toMailId, $subject, $msg, null);
+        $mailStatus = $classObj->sendMailOfferLetter($toMailId, $subject, $msg, null);
     }
     else{
         $output -> responseCode = "0";

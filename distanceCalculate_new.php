@@ -1,8 +1,7 @@
 <?php
-$conn = mysqli_connect("localhost","db","P@ssw0rd","Company");
-// include("dbConfiguration.php");
+include("dbConfiguration.php");
 // require 'AddressByLatLongClass.php';
-$api_key = "AIzaSyDkCjzv4fVu7wlsp31Tu0AnpbyQaxm4Kz8";
+$api_key = "[api_key]";
 
 // $yesterdayDate = date('Y-m-d', strtotime('-1 day'));
 $filterEmpId = 'tr034';

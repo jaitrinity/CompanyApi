@@ -206,7 +206,7 @@ $msg .= "<p style='font-size : 16px !important'>"."On behalf of the entire compa
 $msg .= "<p style='font-size : 16px !important'>"."Your employment start date is <b>$dayName, $joinDate</b>. You'll be greeted at <b>9:30 A.M. at Office No: B-417, Noida One, B-8,Sector-62, Noida (UP) - 201309</b>. Please arrive a few minutes early on your first day."."</p>";
 $msg .= "<p style='font-size : 16px !important'>"."You must print, sign, and scan the form. Please email it back to us by EOD <b>$validDate</b>, to the email address."."<p>";
 $msg .= "<p style='font-size : 16px !important'>"."Directions on how to accept the offer: add an electronic signature (below) or print, sign and scan this letter back to us by EOD <b>$validDate</b>. Scan to the email address at the end of this letter. The offer expires on <b>$validDate</b>."."</p>";
-$msg .= "<p style='font-size : 16px !important'>"."Welcome onboard! If you have questions about anything prior to your first day, don't hesitate to reach out: <a href='mailto:pushkar.tyagi@trinityapplab.co.in'>pushkar.tyagi@trinityapplab.co.in</a>"."</p>";
+$msg .= "<p style='font-size : 16px !important'>"."Welcome onboard! If you have questions about anything prior to your first day, don't hesitate to reach out: <a href='mailto:shruti@trinityapplab.co.in'>shruti@trinityapplab.co.in</a>"."</p>";
 $msg .= "<a style='text-decoration:none;padding:10px;background-color:green;color:white;border-radius:10px' href='www.trinityapplab.in/Company/offerLetterAction.php?mobile=$mobile&action=1' target='blank'>Accept</a>"."&nbsp;&nbsp;";
 $msg .= "<a style='text-decoration:none;padding:10px;background-color:red;color:white;border-radius:10px' href='www.trinityapplab.in/Company/offerLetterAction.php?mobile=$mobile&action=2' target='blank'>Reject</a>";
 // $msg .= "PFA"."<br><br>";
@@ -216,7 +216,7 @@ $msg .= "</body></html>";
 
 $subject = "Offer Letter";
 $classObj = new SendMailClass();
-$response = $classObj->sendMail($toMailId, $subject, $msg, "/var/www/trinityapplab.in/html/Company/files/".$dir."/".$pdfFileName);
+$response = $classObj->sendMailOfferLetter($toMailId, $subject, $msg, "/var/www/trinityapplab.in/html/Company/files/".$dir."/".$pdfFileName);
 
 $output = "";
 if($response){

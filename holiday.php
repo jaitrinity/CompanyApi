@@ -1,5 +1,5 @@
 <?php 
-$conn = mysqli_connect("localhost","db","P@ssw0rd","Company");
+$conn = mysqli_connect("[hostname]","[username]","[password]","[dbname]");
 // $currentYear = "2024";
 $currentYear = date('Y');
 $sql = "SELECT `Name`, date_format(`Date`,'%W') as `Dayy`, date_format(`Date`,'%d-%b-%Y') as `Datee` FROM `Holidays` WHERE date_format(`Date`,'%Y') = '$currentYear' ORDER by `Date`";
