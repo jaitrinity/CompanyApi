@@ -185,6 +185,7 @@ else if($insertType == "offerLetter" && $methodType === 'POST'){
 	$name = $jsonData->name;
 	$mobile = $jsonData->mobile;
 	$emailId = $jsonData->emailId;
+	$officeLocation = $jsonData->officeLocation;
 	$addLine1 = $jsonData->addLine1;
 	$addLine2 = $jsonData->addLine2;
 	$designation = $jsonData->designation;
@@ -193,7 +194,7 @@ else if($insertType == "offerLetter" && $methodType === 'POST'){
 	$doj = date("Y-m-d", strtotime($doj));
 	$lpa = $jsonData->lpa;
 
-	$insertOffer = "INSERT INTO `OfferLetter`(`Name`, `Mobile`, `EmailId`, `AddressLine1`, `AddressLine2`, `Designation`, `DOJ`, `LPA`, `OfferDate`, `OfferExpierDate`) VALUES ('$name', '$mobile', '$emailId', '$addLine1', '$addLine2', '$designation', '$doj', '$lpa', '$offerDate', '$offerExpireDate')";
+	$insertOffer = "INSERT INTO `OfferLetter`(`Name`, `Mobile`, `EmailId`, `OfficeLocation`, `AddressLine1`, `AddressLine2`, `Designation`, `DOJ`, `LPA`, `OfferDate`, `OfferExpierDate`) VALUES ('$name', '$mobile', '$emailId', '$officeLocation', '$addLine1', '$addLine2', '$designation', '$doj', '$lpa', '$offerDate', '$offerExpireDate')";
 
 	$output = "";
 	if(mysqli_query($conn,$insertOffer)){

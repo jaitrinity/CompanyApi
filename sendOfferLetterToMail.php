@@ -20,6 +20,7 @@ $name = $row["Name"];
 $mobile = $row["Mobile"];
 $emailId = $row["EmailId"];
 $designation = $row["Designation"];
+$officeLocation = $row["OfficeLocation"];
 $add1 = $row["AddressLine1"];
 $add2 = $row["AddressLine2"];
 $joinDate = $row["DOJ"];
@@ -31,6 +32,17 @@ $lpa = $row["LPA"];
 $validDate = date('d-F-Y', strtotime('3 day'));
 $expValiDate = explode("-", $validDate);
 $validDate = $expValiDate[0].'th '.$expValiDate[1].' '.$expValiDate[2];
+
+$officeTime = "";
+$officeAddress = "";
+if($officeLocation == "Noida"){
+    $officeTime = "9:30 A.M.";
+    $officeAddress = "Office No: B-417, Noida One, B-8,Sector-62, Noida (UP) - 201309";
+}
+else{
+    $officeTime = "2:00 PM";
+    $officeAddress = "SUN AVENUE ONE, 412A/414/416/507, Shyamal Cross Rd, Manekbag Society, Ambawadi, Ahmedabad, Gujarat 380015";
+}
 
 class PDF extends PDF_Rotate
 {
@@ -203,7 +215,7 @@ $msg = "<html><body>";
 $msg .= "<p style='font-size : 16px !important'>"."Dear $empName, "."</p>";
 $msg .= "<p style='font-size : 16px !important'>"."Greetings of the day!!!"."</p>";
 $msg .= "<p style='font-size : 16px !important'>"."On behalf of the entire company, I'd like to say that it brings me great pleasure to formally offer you the position of <b>$designation</b> at <b>Trinity Mobile App Lab Pvt</b>. A huge congratulations to you!"."</p>";
-$msg .= "<p style='font-size : 16px !important'>"."Your employment start date is <b>$dayName, $joinDate</b>. You'll be greeted at <b>9:30 A.M. at Office No: B-417, Noida One, B-8,Sector-62, Noida (UP) - 201309</b>. Please arrive a few minutes early on your first day."."</p>";
+$msg .= "<p style='font-size : 16px !important'>"."Your employment start date is <b>$dayName, $joinDate</b>. You'll be greeted at <b>$officeTime at $officeAddress</b>. Please arrive a few minutes early on your first day."."</p>";
 $msg .= "<p style='font-size : 16px !important'>"."You must print, sign, and scan the form. Please email it back to us by EOD <b>$validDate</b>, to the email address."."<p>";
 $msg .= "<p style='font-size : 16px !important'>"."Directions on how to accept the offer: add an electronic signature (below) or print, sign and scan this letter back to us by EOD <b>$validDate</b>. Scan to the email address at the end of this letter. The offer expires on <b>$validDate</b>."."</p>";
 $msg .= "<p style='font-size : 16px !important'>"."Welcome onboard! If you have questions about anything prior to your first day, don't hesitate to reach out: <a href='mailto:shruti@trinityapplab.co.in'>shruti@trinityapplab.co.in</a>"."</p>";
