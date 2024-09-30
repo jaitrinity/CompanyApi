@@ -184,24 +184,36 @@ else{
 							$stmt = $conn->prepare($insertLeave);
 							$stmt->bind_param("sssssi", $empId, $fromDate, $toDate, $reason, $monthImplode, $activityId);
 							if($stmt->execute()){
-								$insertId = $conn->insert_id;
+								$leaveId = $conn->insert_id;
 
-								$rmEmpSql = "SELECT e1.EmailId FROM EmployeeMaster e join EmployeeMaster e1 on e.RMId = e1.EmpId where e.EmpId = '$empId'";
+								$rmEmpSql = "SELECT e.EmailId, e.RMId, e1.EmailId as RmEmailId FROM EmployeeMaster e join EmployeeMaster e1 on e.RMId = e1.EmpId where e.EmpId = '$empId'";
 								$rmEmpQuery = mysqli_query($conn,$rmEmpSql);
 								$rmEmpRow = mysqli_fetch_assoc($rmEmpQuery);
-								$rmEmailId = $rmEmpRow["EmailId"];
+								$empEmailId = $rmEmpRow["EmailId"];
+								$rmEmpId = $rmEmpRow["RMId"];
+								$rmEmailId = $rmEmpRow["RmEmailId"];
+
+								$sql = "UPDATE `LeaveMaster` set `RM_EmpId`='$rmEmpId', `RM_EmailId`='$rmEmailId' where `Id`=$leaveId";
+								mysqli_query($conn,$sql);
 							
 								$fromDate = date("d-M-Y", strtotime($fromDate));
 								$toDate = date("d-M-Y", strtotime($toDate));
-								// $subject = "Leave - ".$insertId;
+								// $subject = "Leave - ".$leaveId;
 								$subject = "Leave - from ".$fromDate.' to '.$toDate;
 								$msg = "Dear Mam/Sir,"."<br>";
 								$msg .= "Leave apply by <b>$empName</b> from <b>$fromDate</b> to <b>$toDate</b>."."<br>";
 								$msg .= "<b>Reason</b> : $reason"."<br>";
-								$msg .= "Please take action(Approve or Reject) on this leave.";
+								$msg .= "Please take action(Approve or Reject) on this leave."."<br><br>";
+								$msg .= "<a style='text-decoration:none;padding:10px;background-color:green;color:white;border-radius:10px' href='www.trinityapplab.in/Company/actionOnLeave.php?leaveId=$leaveId&action=1' target='blank'>Approve</a>"."&nbsp;&nbsp;";
+								$msg .= "<a style='text-decoration:none;padding:10px;background-color:red;color:white;border-radius:10px' href='www.trinityapplab.in/Company/actionOnLeave.php?leaveId=$leaveId&action=2' target='blank'>Reject</a>";
 
 								$classObj = new SendMailClass();
-								$mailStatus = $classObj->sendMail($rmEmailId, $subject, $msg, null);
+								$mailStatus = $classObj->sendLeaveMail($rmEmailId, "", $subject, $msg, null);
+
+
+								$msg1 = "Dear $empName<br><br>";
+								$msg1 .= "Your leave is applied successfully.";
+								$mailStatus = $classObj->sendLeaveMailJustMe($empEmailId, $subject, $msg1, null);
 							}
 
 						}

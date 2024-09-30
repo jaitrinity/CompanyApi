@@ -34,7 +34,9 @@ else if($selectType == "employee"){
 	// $sql = "SELECT e.Id, e.EmpId, e.Name, e.FatherHusbandName, e.Mobile, e.EmailId, e.DOB, e.DOJ, e.AadharNumber, e.AadharAttachment, e.PAN, e.PANAttachment, ee.Basic, ee.HRA, ee.ConveyanceAllowance, ee.MedicalAllowance, ee.TelephoneAllowance, ee.SpecialAllowance, ee.OtherAllowance, ee.GrossSalary, ed.PaidDays, ed.MonthYear, ed.RetentionBonus, ed.ProfessionTax, ed.LossOfPay, ed.OtherDeductions, ed.IncomeTax, ed.OtherTax, r.RoleName FROM EmployeeMaster e join EmployeeEarnings ee on e.EmpId = ee.EmpId left join EmployeeDeductions ed on e.EmpId = ed.EmpId left join RoleMaster r on e.RoleId = r.RoleId ";
 	// $sql = "SELECT e.Id, e.EmpId, e.Name, e.FatherHusbandName, e.Mobile, e.EmailId, e.DOB, e.DOJ, e.AadharNumber, e.AadharAttachment, e.PAN, e.PANAttachment, ee.Basic, ee.HRA, ee.ConveyanceAllowance, ee.MedicalAllowance, ee.TelephoneAllowance, ee.SpecialAllowance, ee.OtherAllowance, ee.GrossSalary, r.RoleName FROM EmployeeMaster e join EmployeeEarnings ee on e.EmpId = ee.EmpId left join RoleMaster r on e.RoleId = r.RoleId ";
 
-	$sql = "SELECT e.Id, e.EmpId, e.Name, e.FatherHusbandName, e.Mobile, e.EmailId, e.DOB, e.DOJ, e.LeaveBalance, e.AadharNumber, e.AadharAttachment, e.PAN, e.PANAttachment, ee.Basic, ee.HRA, ee.ConveyanceAllowance, ee.MedicalAllowance, ee.TelephoneAllowance, ee.SpecialAllowance, ee.OtherAllowance, ee.GrossSalary, r.RoleName, (case when ed.MonthYear is null then 'Pending' else 'Done' end) as SalaryStatus, e.IsActive FROM EmployeeMaster e join EmployeeEarnings ee on e.EmpId = ee.EmpId left join RoleMaster r on e.RoleId = r.RoleId left join EmployeeDeductions ed on e.EmpId = ed.EmpId and ed.MonthYear = '$lastMonthYear' ";
+	// $sql = "SELECT e.Id, e.EmpId, e.Name, e.FatherHusbandName, e.Mobile, e.EmailId, e.DOB, e.DOJ, e.LeaveBalance, e.AadharNumber, e.AadharAttachment, e.PAN, e.PANAttachment, ee.Basic, ee.HRA, ee.ConveyanceAllowance, ee.MedicalAllowance, ee.TelephoneAllowance, ee.SpecialAllowance, ee.OtherAllowance, ee.GrossSalary, r.RoleName, (case when ed.MonthYear is null then 'Pending' else 'Done' end) as SalaryStatus, e.IsActive FROM EmployeeMaster e join EmployeeEarnings ee on e.EmpId = ee.EmpId left join RoleMaster r on e.RoleId = r.RoleId left join EmployeeDeductions ed on e.EmpId = ed.EmpId and ed.MonthYear = '$lastMonthYear' ";
+
+	$sql = "SELECT e.Id, e.EmpId, e.Name, e.FatherHusbandName, e.Mobile, e.EmailId, e.DOB, e.DOJ, e.LeaveBalance, e.AadharNumber, e.AadharAttachment, e.PAN, e.PANAttachment, e.RMId, e1.Name as RmName, ee.Basic, ee.HRA, ee.ConveyanceAllowance, ee.MedicalAllowance, ee.TelephoneAllowance, ee.SpecialAllowance, ee.OtherAllowance, ee.GrossSalary, r.RoleName, (case when ed.MonthYear is null then 'Pending'else 'Done'end)as SalaryStatus, e.IsActive FROM EmployeeMaster e join EmployeeEarnings ee on e.EmpId=ee.EmpId left join EmployeeMaster e1 on e.RMId=e1.EmpId left join RoleMaster r on e.RoleId=r.RoleId left join EmployeeDeductions ed on e.EmpId=ed.EmpId and ed.MonthYear='$lastMonthYear' order by e.Id desc";
 	$query = mysqli_query($conn,$sql);
 
 	$empArr = array();
@@ -77,6 +79,8 @@ else if($selectType == "employee"){
 			'aadharAttachment' => $aadharAttachment,
 			'pan' => $pan,
 			'panAttachment' => $panAttachment,
+			'rmId' => $row["RMId"],
+			'rmName' => $row["RmName"],
 			'basic' => $basic,
 			'hra' => $hra,
 			'conveyanceAllowance' => $conveyanceAllowance,
@@ -283,6 +287,22 @@ else if($selectType == "offerApproved"){
 	}
 	$output = array();
 	$output = array('offerApprovedList' => $dataList);
+	echo json_encode($output);
+}
+else if($selectType == "allRmEmp"){
+	$rmEmpIdList = "Admin995,tr051,tr052";
+	$rmEmpIdList = str_replace(",", "','", $rmEmpIdList);
+	$sql = "SELECT `EmpId`, `Name` FROM `EmployeeMaster` where `EmpId` in ('$rmEmpIdList') and `IsActive`=1";
+	$query = mysqli_query($conn,$sql);
+	$dataList = array();
+	while($row = mysqli_fetch_assoc($query)){
+		$json = array(
+			'empId' => $row["EmpId"],
+			'name' => $row["Name"]
+		);
+		array_push($dataList,$json);
+	}
+	$output = array('rmEmpList' => $dataList);
 	echo json_encode($output);
 }
 else if($selectType == "corporateAndClient"){
