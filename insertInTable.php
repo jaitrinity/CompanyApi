@@ -279,12 +279,13 @@ else if($insertType == "saveLeave" && $methodType === 'POST'){
 			}	
 		}
 
-		$rmEmpSql = "SELECT e.EmailId, e.RMId, e1.EmailId as RmEmailId FROM EmployeeMaster e join EmployeeMaster e1 on e.RMId = e1.EmpId where e.EmpId = '$empId'";
+		$rmEmpSql = "SELECT e.EmailId, e.RMId, e1.EmailId as RmEmailId, e.State as TmHrEmailId FROM EmployeeMaster e join EmployeeMaster e1 on e.RMId = e1.EmpId where e.EmpId = '$empId'";
 		$rmEmpQuery = mysqli_query($conn,$rmEmpSql);
 		$rmEmpRow = mysqli_fetch_assoc($rmEmpQuery);
 		$empEmailId = $rmEmpRow["EmailId"];
 		$rmEmpId = $rmEmpRow["RMId"];
 		$rmEmailId = $rmEmpRow["RmEmailId"];
+		$tmHrEmailId = $rmEmpRow["TmHrEmailId"] == null ? "" : $rmEmpRow["TmHrEmailId"];
 
 		$sql = "UPDATE `LeaveMaster` set `RM_EmpId`='$rmEmpId', `RM_EmailId`='$rmEmailId' where `Id`=$leaveId";
 		mysqli_query($conn,$sql);
@@ -297,13 +298,102 @@ else if($insertType == "saveLeave" && $methodType === 'POST'){
 		$msg .= "Leave apply by <b>$empName</b> from <b>$fromDate</b> to <b>$toDate</b>."."<br>";
 		$msg .= "<b>Reason</b> : $reason"."<br>";
 		$msg .= "Please take action(Approve or Reject) on this leave."."<br><br>";
-		$msg .= "<a style='text-decoration:none;padding:10px;background-color:green;color:white;border-radius:10px' href='www.trinityapplab.in/Company/actionOnLeave.php?leaveId=$leaveId&action=1' target='blank'>Approve</a>"."&nbsp;&nbsp;";
-		$msg .= "<a style='text-decoration:none;padding:10px;background-color:red;color:white;border-radius:10px' href='www.trinityapplab.in/Company/actionOnLeave.php?leaveId=$leaveId&action=2' target='blank'>Reject</a>";
+		$msg .= "<a style='text-decoration:none;padding:10px;background-color:green;color:white;border-radius:10px' href='https://www.trinityapplab.in/Company/actionOnLeave.php?leaveId=$leaveId&action=1' target='blank'>Approve</a>"."&nbsp;&nbsp;";
+		$msg .= "<a style='text-decoration:none;padding:10px;background-color:red;color:white;border-radius:10px' href='https://www.trinityapplab.in/Company/actionOnLeave.php?leaveId=$leaveId&action=2' target='blank'>Reject</a>";
 		$classObj = new SendMailClass();
-		$mailStatus = $classObj->sendLeaveMail($rmEmailId, "", $subject, $msg, null);
+		$mailStatus = $classObj->sendLeaveMail($rmEmailId, $tmHrEmailId, $subject, $msg, null);
 
 		$msg1 = "Dear $empName<br><br>";
 		$msg1 .= "Your leave is applied successfully.";
+		$mailStatus = $classObj->sendLeaveMailJustMe($empEmailId, $subject, $msg1, null);
+	}
+	else{
+		$output -> responseCode = "0";
+		$output -> responseDesc = "Something wrong";
+	}
+	echo json_encode($output);
+}
+else if($insertType == "updateLeave" && $methodType === 'POST'){
+	$leaveId = $jsonData->leaveId;
+	$empId = $jsonData->empId;
+	$fromDate = $jsonData->fromDate;
+	$fromDate = str_replace('/', '-', $fromDate);
+	$fromDate = date("Y-m-d", strtotime($fromDate));
+	$toDate = $jsonData->toDate;
+	$toDate = str_replace('/', '-', $toDate);
+	$toDate = date("Y-m-d", strtotime($toDate));
+	$reason = $jsonData->reason;
+	$activityId = $jsonData->activityId;
+
+	$monthList = array();
+	$dayList = getDatesFromRange($fromDate, $toDate);
+	for($i=0;$i<count($dayList);$i++){
+		$thisDate = $dayList[$i];
+		$thisDate_monthYear = date('M-Y', strtotime($thisDate));
+		if(count($monthList) == 0){
+			array_push($monthList, $thisDate_monthYear);
+		}
+		else{
+			if(!in_array($thisDate_monthYear,$monthList)){
+				array_push($monthList, $thisDate_monthYear);
+			}
+		}
+	}
+
+	$monthImplode = implode(",", $monthList);
+
+	$insertLeave = "UPDATE `LeaveMaster` set `FromDate`=?, `ToDate`=?, `Reason`=?, `MonthInclude`=? where `Id`=?";
+	$stmt = $conn->prepare($insertLeave);
+	$stmt->bind_param("ssssi", $fromDate, $toDate, $reason, $monthImplode, $leaveId);
+	$output = "";
+	if($stmt->execute()){
+		$output -> responseCode = "100000";
+		$output -> responseDesc = "Successfully update";
+
+		$exFromDate = explode("-", $fromDate);
+		$exToDate = explode("-", $toDate);
+
+		$fromDate1 = $exFromDate[2]."/".$exFromDate[1]."/".$exFromDate[0];
+		$toDate1 = $exToDate[2]."/".$exToDate[1]."/".$exToDate[0];
+
+		$updateDet = "UPDATE `TransactionDTL` set `Value`='$fromDate1' where `ChkId`=1 and `ActivityId`=$activityId";
+		$stmt = $conn->prepare($updateDet);
+		$stmt->execute();
+
+		$updateDet = "UPDATE `TransactionDTL` set `Value`='$toDate1' where `ChkId`=2 and `ActivityId`=$activityId";
+		$stmt = $conn->prepare($updateDet);
+		$stmt->execute();
+
+		$updateDet = "UPDATE `TransactionDTL` set `Value`=? where `ChkId`=3 and `ActivityId`=$activityId";
+		$stmt->bind_param("s", $reason);
+		$stmt->execute();
+
+		$rmEmpSql = "SELECT e.Name, e.EmailId, e.RMId, e1.EmailId as RmEmailId, e.State as TmHrEmailId FROM EmployeeMaster e join EmployeeMaster e1 on e.RMId = e1.EmpId where e.EmpId = '$empId'";
+		$rmEmpQuery = mysqli_query($conn,$rmEmpSql);
+		$rmEmpRow = mysqli_fetch_assoc($rmEmpQuery);
+		$empName = $rmEmpRow["Name"];
+		$empEmailId = $rmEmpRow["EmailId"];
+		$rmEmpId = $rmEmpRow["RMId"];
+		$rmEmailId = $rmEmpRow["RmEmailId"];
+		$tmHrEmailId = $rmEmpRow["TmHrEmailId"] == null ? "" : $rmEmpRow["TmHrEmailId"];
+
+		$sql = "UPDATE `LeaveMaster` set `RM_EmpId`='$rmEmpId', `RM_EmailId`='$rmEmailId' where `Id`=$leaveId";
+		mysqli_query($conn,$sql);
+
+		$fromDate = date("d-M-Y", strtotime($fromDate));
+		$toDate = date("d-M-Y", strtotime($toDate));
+		$subject = "Updated Leave - from ".$fromDate.' to '.$toDate;
+		$msg = "Dear Mam/Sir,"."<br>";
+		$msg .= "Leave apply by <b>$empName</b> from <b>$fromDate</b> to <b>$toDate</b>."."<br>";
+		$msg .= "<b>Reason</b> : $reason"."<br>";
+		$msg .= "Please take action(Approve or Reject) on this leave."."<br><br>";
+		$msg .= "<a style='text-decoration:none;padding:10px;background-color:green;color:white;border-radius:10px' href='https://www.trinityapplab.in/Company/actionOnLeave.php?leaveId=$leaveId&action=1' target='blank'>Approve</a>"."&nbsp;&nbsp;";
+		$msg .= "<a style='text-decoration:none;padding:10px;background-color:red;color:white;border-radius:10px' href='https://www.trinityapplab.in/Company/actionOnLeave.php?leaveId=$leaveId&action=2' target='blank'>Reject</a>";
+		$classObj = new SendMailClass();
+		$mailStatus = $classObj->sendLeaveMail($rmEmailId, $tmHrEmailId, $subject, $msg, null);
+
+		$msg1 = "Dear $empName<br><br>";
+		$msg1 .= "Your leave is updated successfully.";
 		$mailStatus = $classObj->sendLeaveMailJustMe($empEmailId, $subject, $msg1, null);
 	}
 	else{

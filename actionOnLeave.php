@@ -19,7 +19,7 @@ if($rowCount != 0){
 		$updateSql = "UPDATE `LeaveMaster` set `Status` = $action where `Id`=$leaveId";
 		$msg = "";
 		if(mysqli_query($conn,$updateSql)){
-			$sql = "SELECT l.EmpId, e.Name, e.EmailId, e.LeaveBalance, l.FromDate, l.ToDate, l.IsLeaveBalanceCalculated, l.RM_EmailId FROM LeaveMaster l join EmployeeMaster e on l.EmpId = e.EmpId where l.Id = $leaveId";
+			$sql = "SELECT l.EmpId, e.Name, e.EmailId, e.LeaveBalance, l.FromDate, l.ToDate, l.IsLeaveBalanceCalculated, l.RM_EmailId, e.State as TmHrEmailId FROM LeaveMaster l join EmployeeMaster e on l.EmpId = e.EmpId where l.Id = $leaveId";
 
 			$query = mysqli_query($conn,$sql);
 			$row = mysqli_fetch_assoc($query);
@@ -31,6 +31,9 @@ if($rowCount != 0){
 			$toDate = $row["ToDate"];
 			$ilbc = $row["IsLeaveBalanceCalculated"];
 			$rmEmailId = $row["RM_EmailId"];
+			$tmHrEmailId = $row["TmHrEmailId"] == null ? "" : $row["TmHrEmailId"];
+
+			$rmEmailId .= ",".$tmHrEmailId;
 
 			$msg = "Dear $name,"."<br>";
 			if($action == 1){

@@ -40,7 +40,7 @@ if($officeLocation == "Noida"){
 }
 else{
     $officeTime = "2:00 PM";
-    $officeAddress = "SUN AVENUE ONE, 412A/414/416/507, Shyamal Cross Rd, Manekbag Society, Ambawadi, Ahmedabad, Gujarat 380015";
+    $officeAddress = "11th Floor, A- Block, The First, Beside ITC Narmada, Vastrapur, Ahmedabad – 380015";
 }
 
 

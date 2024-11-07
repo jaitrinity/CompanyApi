@@ -180,7 +180,49 @@ else if($selectType == "offerLetter"){
 	echo json_encode($output);
 }
 else if($selectType == "leaves"){
-	$sql = "SELECT l.Id, e.Name, l.FromDate, l.ToDate, l.Reason, l.Reason, l.Status, (case when l.Status = 0 then 'Pending' when l.Status = 1 then 'Approved' when l.Status = 2 then 'Rejected' end) as LeaveStatus, e.LeaveBalance FROM LeaveMaster l join EmployeeMaster e on l.EmpId = e.EmpId where 1=1 ";
+	$sql = "SELECT l.Id, l.EmpId, e.Name, l.FromDate, l.ToDate, l.Reason, l.Reason, l.Status, l.ActivityId, (case when l.Status = 0 then 'Pending' when l.Status = 1 then 'Approved' when l.Status = 2 then 'Rejected' end) as LeaveStatus, e.LeaveBalance FROM LeaveMaster l join EmployeeMaster e on l.EmpId = e.EmpId where 1=1 ";
+	if($loginEmpRoleId != 1){
+		$sql .= " and l.EmpId = '$loginEmpId' ";
+	}
+	$sql .= "order by l.CreateDate desc";
+	$query=mysqli_query($conn,$sql);
+	$leaveArr = array();
+	while($row = mysqli_fetch_assoc($query)){
+		$id = $row["Id"];
+		$name = $row["Name"];
+		$fromDate = $row["FromDate"];
+		$toDate = $row["ToDate"];
+		$reason = $row["Reason"];
+		$status = $row["Status"];
+		$leaveStatus = $row["LeaveStatus"];
+
+		$json = array(
+			'id' => $id,
+			'empId' => $row["EmpId"],
+			'name' => $name,
+			'fromDate' => $fromDate,
+			'toDate' => $toDate,
+			'reason' => $reason,
+			'status' => $status,
+			'leaveStatus' => $leaveStatus,
+			'activityId' => $row["ActivityId"]
+		);
+		array_push($leaveArr,$json);
+	}
+	
+	$leaveBalance="";
+	if($loginEmpRoleId != 1){
+		$sql = "SELECT `LeaveBalance` from `EmployeeMaster` where `EmpId`='$loginEmpId'";
+		$query=mysqli_query($conn,$sql);
+		$row = mysqli_fetch_assoc($query);
+		$leaveBalance = $row["LeaveBalance"];
+	}
+
+	$output = array('leaveList' => $leaveArr, 'leaveBalance' => $leaveBalance);
+	echo json_encode($output);
+}
+else if($selectType == "leaves_old"){
+	$sql = "SELECT l.Id, l.EmpId, e.Name, l.FromDate, l.ToDate, l.Reason, l.Reason, l.Status, l.ActivityId, (case when l.Status = 0 then 'Pending' when l.Status = 1 then 'Approved' when l.Status = 2 then 'Rejected' end) as LeaveStatus, e.LeaveBalance FROM LeaveMaster l join EmployeeMaster e on l.EmpId = e.EmpId where 1=1 ";
 	if($loginEmpRoleId != 1){
 		$sql .= " and l.EmpId = '$loginEmpId' ";
 	}
@@ -202,12 +244,14 @@ else if($selectType == "leaves"){
 
 		$json = array(
 			'id' => $id,
+			'empId' => $row["EmpId"],
 			'name' => $name,
 			'fromDate' => $fromDate,
 			'toDate' => $toDate,
 			'reason' => $reason,
 			'status' => $status,
-			'leaveStatus' => $leaveStatus
+			'leaveStatus' => $leaveStatus,
+			'activityId' => $row["ActivityId"]
 		);
 		array_push($leaveArr,$json);
 	}
