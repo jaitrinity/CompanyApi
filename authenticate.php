@@ -1,7 +1,11 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers:content-type");
 include("dbConfiguration.php");
+$methodType = $_SERVER['REQUEST_METHOD'];
+if($methodType != "POST"){
+	$output = array('code' => 405, 'message' => 'Invalid method Type');
+	echo json_encode($output);
+	return;
+}
 $json = file_get_contents('php://input');
 $jsonData=json_decode($json);
 

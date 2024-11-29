@@ -156,5 +156,22 @@ else if($updateType == "actionOnEmp" && $methodType === 'POST'){
     }
     echo json_encode($output);
 }
+else if($updateType == "assetStatus" && $methodType === 'POST'){
+    $assetId = $jsonData->assetId;
+    $status = $jsonData->status;
+    
+    $updateDevice = "UPDATE `AssetAllocation` set `Status`=$status, `ReturnDate`=date_format(curDate(),'%d-%m-%Y') where `Id`=$assetId";
+    $output = "";
+    if(mysqli_query($conn,$updateDevice)){
+        $output -> responseCode = "100000";
+        $output -> responseDesc = "Successfully update";
+
+    }
+    else{
+        $output -> responseCode = "0";
+        $output -> responseDesc = "Something wrong";
+    }
+    echo json_encode($output);
+}
 
 ?>

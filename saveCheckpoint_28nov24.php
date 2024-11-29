@@ -219,12 +219,6 @@ else{
 						}
 						
 					}
-
-					if($mId == 9){
-						$insAsset = "INSERT INTO `AssetAllocation`(`ActivityId`, `EmpId`, `Name`, `MobileDateTime`, `AssetCategory`, `DeviceName`, `SerialNumber`, `IssueDate`, `Pic`, `Remark`) 
-							SELECT `ActivityId`, `EmpId`, `Name`, `MobileDateTime`, `AssetCategory`, `DeviceName`, `SerialNumber`, `IssueDate`, `Pic`, `Remark` FROM `V_AssetAllocation` WHERE `ActivityId`=$activityId";
-						mysqli_query($conn,$insAsset);
-					}
 				}
 			}
 			else{
@@ -420,7 +414,7 @@ else{
 	}
 	echo json_encode($output);
 
-	file_put_contents('/var/www/trinityapplab.in/html/Company/log/log_'.date("Y-m-d").'.log', date("Y-m-d H:i:s").' '.json_encode($output)."\n", FILE_APPEND);
+	// file_put_contents('/var/www/trinityapplab.in/html/Company/log/log_'.date("Y-m-d").'.log', date("Y-m-d H:i:s").' '.json_encode($output)."\n", FILE_APPEND);
 		
 	
 }

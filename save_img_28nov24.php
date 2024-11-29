@@ -20,32 +20,30 @@ $activityId=$_REQUEST["trans_id"];
 $company=$_REQUEST["company"];
 $chk_id=$_REQUEST["chk_id"];
 $depend_upon=$_REQUEST["depend_upon"];
+$timestamp=$_REQUEST["timestamp"];
 $caption=$_REQUEST["caption"];
-$timestamp = $_REQUEST["timestamp"];
-$latlong = $_REQUEST["latLong"];
-$dateTime = $_REQUEST["dateTime"];
-
-$requestJson = array('activityId' => $activityId, 'company' => $company, 'chk_id' => $chk_id, 'depend_upon' => $depend_upon, 'caption' => $caption, 'timestamp' => $timestamp, 'latlong' => $latlong, 'dateTime' => $dateTime );
-
-// file_put_contents('/var/www/trinityapplab.in/html/Company/log/save_img_'.date("Y-m-d").'.log', date("Y-m-d H:i:s").' '.json_encode($requestJson)."\n", FILE_APPEND);
+$latitude=$_REQUEST["latitude"];
+$longitude=$_REQUEST["longitude"];
 
 $cpId = "";
-$dependId = "0";
+$dependId = "";
 $cpIdlist = explode("_",$chk_id);
-// $dIdlist = explode("_",$depend_upon);
-if(count($cpIdlist) > 1){
+$dIdlist = explode("_",$depend_upon);
+if(count($cpIdlist) > 2){
 	$cpId = $cpIdlist[1];
-	$dependId = $cpIdlist[0];
 }
 else{
 	$cpId = $cpIdlist[0];
 }
+$dependId = $dIdlist[0];
 
 $prevValue = "";
-$fileName = $_FILES["attachment"]["name"];
-$target_file = $target_dir."".$t.$fileName;
+$target_file = $target_dir."".$t.$_FILES["attachment"]["name"];
 	
+//echo $target_file."<br>";
+//echo "$t".$_FILES["attachment"]["name"];
 $isWrite = move_uploaded_file($_FILES["attachment"]["tmp_name"], $target_file); 
+//echo $isWrite;
 if ($isWrite) 
 {
 	$parts = explode('/', $_SERVER['REQUEST_URI']);
@@ -58,12 +56,12 @@ if ($isWrite)
 	if($rowcount > 0){
 		$sr = mysqli_fetch_assoc($selectData);
 		$prevValue = $sr['Value'];
-		$prevLat_Long = $sr['Lat_Long'];
-		$prevDatetime = $sr["Date_time"];
-		$query = "Update TransactionDTL set Value = '$prevValue,$fileURL', Lat_Long = '$prevLat_Long:$latlong', `Date_time` = '$prevDatetime,$dateTime' where ActivityId = '$activityId' and ChkId = '$cpId'  and DependChkId = '$dependId'";		
+		$query = "Update TransactionDTL set Value = '$prevValue,$fileURL', Latitude = '$latitude', Longitude = '$longitude', `Date_time` = '$timestamp' 
+		where ActivityId = '$activityId' and ChkId = '$cpId'  and DependChkId = '$dependId'";	
 	}
 	else{
-		$query = "Update TransactionDTL set Value = '$fileURL', Lat_Long = '$latlong', `Date_time` = '$dateTime' where ActivityId = '$activityId' and ChkId = '$cpId'  and DependChkId = '$dependId'";	
+		$query = "Update TransactionDTL set Value = '$fileURL', Latitude = '$latitude', Longitude = '$longitude', `Date_time` = '$timestamp' 
+		where ActivityId = '$activityId' and ChkId = '$cpId'  and DependChkId = '$dependId'";	
 	}
 	
 	mysqli_query($conn,$query);
@@ -71,18 +69,13 @@ if ($isWrite)
 	$arr[]=array('error' => '200','message'=>'Save Successfully!','fileName'=> $fileName,'caption'=> $caption,'timestamp'=>$timestamp,'chk_id'=>$chk_id,'FileURL'=>$fileURL);
 	header('Content-Type: application/json');
 	echo json_encode($arr[0]);
-	file_put_contents('/var/www/trinityapplab.in/html/Company/log/save_img_'.date("Y-m-d").'.log', date("Y-m-d H:i:s").' '.json_encode($arr[0])."\n", FILE_APPEND);
 } 
 else 
 {
 	$arr[]=array('error' => '201','message'=>'Error!','fileName'=> $fileName,'caption'=> $caption,'timestamp'=>$timestamp,'chk_id'=>$chk_id,'FileURL'=>'');
 	header('Content-Type: application/json');
 	echo json_encode($arr[0]);
-	// file_put_contents('/var/www/trinityapplab.in/html/Company/log/save_img_'.date("Y-m-d").'.log', date("Y-m-d H:i:s").' '.json_encode($arr[0])."\n", FILE_APPEND);
-}
-
-if($chk_id == 115){
-	$assetPic = "UPDATE AssetAllocation aa join TransactionDTL d on aa.ActivityId=d.ActivityId and d.ChkId=115 set aa.Pic=d.Value where aa.ActivityId=$activityId";
-	mysqli_query($conn,$assetPic);
+    //echo "Sorry, there was an error uploading your file.";
+    //exit();
 }
 ?>

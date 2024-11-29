@@ -10,7 +10,7 @@ class SendMailClass{
 	    $mail->isSMTP();                                      
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
-		$mail->Username = '[emailId]';
+	    $mail->Username = '[emailId]';
 	    $mail->Password = '[password]';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
@@ -23,7 +23,11 @@ class SendMailClass{
 	    $mail->addAddress($toMailId);
 
 	    // CC mail's
-	    $mail->addCC($ccMailId);
+	    $ccMailList = explode(",", $ccMailId);
+	    for($i=0;$i<count($ccMailList);$i++){
+	    	$loopCC = $ccMailList[$i];
+	    	$mail->addCC($loopCC);
+	    }
 	    $mail->addCC('shruti@trinityapplab.co.in');
 	    $mail->addCC('ayush.agarwal@trinityapplab.co.in');
 
@@ -54,7 +58,7 @@ class SendMailClass{
 	    $mail->isSMTP();                                      
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
-		$mail->Username = '[emailId]';
+	    $mail->Username = '[emailId]';
 	    $mail->Password = '[password]';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
@@ -98,7 +102,7 @@ class SendMailClass{
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
 	    $mail->Username = '[emailId]';
-	    $mail->Password = '[password]';  
+	    $mail->Password = '[password]';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
 	    
@@ -149,8 +153,8 @@ class SendMailClass{
 	    $mail->isSMTP();                                      
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
-		$mail->Username = '[emailId]';
-	    $mail->Password = '[password]'; 
+	    $mail->Username = '[emailId]';
+	    $mail->Password = '[password]';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
 	    
@@ -192,8 +196,8 @@ class SendMailClass{
 	    $mail->isSMTP();                                      
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
-		$mail->Username = '[emailId]';
-	    $mail->Password = '[password]'; 
+	    $mail->Username = '[emailId]';
+	    $mail->Password = '[password]';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
 	    
@@ -235,8 +239,8 @@ class SendMailClass{
 	    $mail->isSMTP();                                      
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
-		$mail->Username = '[emailId]';
-	    $mail->Password = '[password]';  
+	    $mail->Username = '[emailId]';
+	    $mail->Password = '[password]';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
 	    

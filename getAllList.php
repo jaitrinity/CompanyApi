@@ -934,6 +934,55 @@ else if($selectType == "attendance"){
 	$output = array('attendanceList' => $attendanceList);
 	echo json_encode($output);
 }
+else if($selectType == "asset"){
+	$filterSql = "";
+	if($loginEmpRoleId == 1){
+		
+	}
+	else{
+		$underEmpList = array();
+		array_push($underEmpList, $loginEmpId);
+
+		$empSql = "SELECT `EmpId` FROM `EmployeeMaster` where `RMId`='$loginEmpId' and `IsActive`=1";
+		$empQuery = mysqli_query($conn,$empSql);
+		while($empRow = mysqli_fetch_assoc($empQuery)){
+			array_push($underEmpList, $empRow["EmpId"]);
+		}
+
+		$empIds = implode("','", $underEmpList);
+		$filterSql .= " and `EmpId` in ('".$empIds."')";
+	}
+
+	$sql = "SELECT * FROM `AssetAllocation` where 1=1 $filterSql ORDER by `Id` desc";
+	$query=mysqli_query($conn,$sql);
+	$dataList = array();
+	while($row = mysqli_fetch_assoc($query)){
+		$returnDate = $row["ReturnDate"];
+		$status = $row["Status"];
+		$statusTxt = $status == 1 ? "Issue" : "Return";
+		$pic = $row["Pic"];
+		$picList = explode(",", $pic);
+		$dataJson = array(
+			'id' => $row["Id"],
+			'activityId' => $row["ActivityId"],
+			'empId' => $row["EmpId"], 
+			'name' => $row["Name"], 
+			'submitDate' => $row["MobileDateTime"], 
+			'assetCategory' => $row["AssetCategory"], 
+			'deviceName' => $row["DeviceName"], 
+			'serialNumber' => $row["SerialNumber"], 
+			'issueDate' => $row["IssueDate"], 
+			'returnDate' => $returnDate == null ? "" : $returnDate, 
+			'remark' => $row["Remark"],
+			'status' => $status,
+			'statusTxt' => $statusTxt,
+			'picList' => $picList
+		);
+		array_push($dataList, $dataJson);
+	}
+	$output = array('assetList' => $dataList);
+	echo json_encode($output);
+}
 
 
 //Close the connection 
