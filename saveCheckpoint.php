@@ -225,6 +225,10 @@ else{
 							SELECT `ActivityId`, `EmpId`, `Name`, `MobileDateTime`, `AssetCategory`, `DeviceName`, `SerialNumber`, `IssueDate`, `Pic`, `Remark` FROM `V_AssetAllocation` WHERE `ActivityId`=$activityId";
 						mysqli_query($conn,$insAsset);
 					}
+					if($mId == 10){
+						$insComp = "INSERT INTO `Complaint`(`ActivityId`) VALUES ($activityId)";
+						mysqli_query($conn,$insComp);
+					}
 				}
 			}
 			else{

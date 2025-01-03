@@ -173,5 +173,26 @@ else if($updateType == "assetStatus" && $methodType === 'POST'){
     }
     echo json_encode($output);
 }
+else if($updateType == "complaintStatus" && $methodType === 'POST'){
+    $id = $jsonData->id;
+    $closeDescription = $jsonData->closeDescription;
+    $status = $jsonData->status;
+    
+    $sql = "UPDATE `Complaint` set `Status`=$status, `CloseDescription`=?, `CloseDate`=curDate() where `Id`=$id";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $closeDescription);
+
+    $output = "";
+    if($stmt->execute()){
+        $output -> responseCode = "100000";
+        $output -> responseDesc = "Successfully update";
+
+    }
+    else{
+        $output -> responseCode = "0";
+        $output -> responseDesc = "Something wrong";
+    }
+    echo json_encode($output);
+}
 
 ?>

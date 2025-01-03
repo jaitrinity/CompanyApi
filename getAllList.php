@@ -953,7 +953,7 @@ else if($selectType == "asset"){
 		$filterSql .= " and `EmpId` in ('".$empIds."')";
 	}
 
-	$sql = "SELECT * FROM `AssetAllocation` where 1=1 $filterSql ORDER by `Id` desc";
+	$sql = "SELECT * FROM `AssetAllocation` where 1=1 and `Status` != 10 $filterSql ORDER by `Id` desc";
 	$query=mysqli_query($conn,$sql);
 	$dataList = array();
 	while($row = mysqli_fetch_assoc($query)){
@@ -981,6 +981,45 @@ else if($selectType == "asset"){
 		array_push($dataList, $dataJson);
 	}
 	$output = array('assetList' => $dataList);
+	echo json_encode($output);
+}
+else if($selectType == "complaint"){
+	$filterSql = "";
+	if($loginEmpRoleId == 1){
+		
+	}
+	else{
+		$underEmpList = array();
+		array_push($underEmpList, $loginEmpId);
+
+		$empSql = "SELECT `EmpId` FROM `EmployeeMaster` where `RMId`='$loginEmpId' and `IsActive`=1";
+		$empQuery = mysqli_query($conn,$empSql);
+		while($empRow = mysqli_fetch_assoc($empQuery)){
+			array_push($underEmpList, $empRow["EmpId"]);
+		}
+
+		$empIds = implode("','", $underEmpList);
+		$filterSql .= " and vc.EmpId in ('".$empIds."')";
+	}
+
+	$sql = "SELECT c.Id as id, vc.EmpId as empId, vc.Name as empName, date_format(vc.MobileDateTime,'%d-%m-%Y') as raiseDate, date_format(c.CloseDate,'%d-%m-%Y') as closeDate, c.CloseDescription as closeDescription, vc.ComplaintType as complaintType, vc.Photo as photo, vc.DetailedDescription as description, c.Status as status  FROM Complaint c join V_Complaint vc on c.ActivityId=vc.ActivityId where 1=1 $filterSql and c.Status != 10 order by c.Id desc";
+	$query=mysqli_query($conn,$sql);
+	$dataList = array();
+	while($row = mysqli_fetch_assoc($query)){
+		$status = $row["status"];
+		$closeDescription = $row["closeDescription"];
+		$closeDescription = $closeDescription == null ? "" : $closeDescription;
+		$statusTxt = $status == 1 ? "Close" : "In Progress";
+		$pic = $row["photo"];
+		$picList = explode(",", $pic);
+
+		$row["closeDescription"] = $closeDescription;
+		$row["statusTxt"] = $statusTxt;
+		$row["picList"] = $picList;
+		unset($row["photo"]);
+		array_push($dataList, $row);
+	}
+	$output = array('complaintList' => $dataList);
 	echo json_encode($output);
 }
 
