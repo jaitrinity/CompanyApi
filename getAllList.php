@@ -124,6 +124,7 @@ else if($selectType == "deduction"){
 			'otherDeductions' => $row["OtherDeductions"],
 			'incomeTax' => $row["IncomeTax"],
 			'otherTax' => $row["OtherTax"],
+			'reimbursements' => $row["Reimbursements"]
 		);
 		array_push($deductionList,$json);
 	}
@@ -325,6 +326,7 @@ else if($selectType == "offerApproved"){
 			'name' => $row["Name"], 
 			'mobile' => $row["Mobile"],
 			'emailId' => $row["EmailId"],
+			'designation' => $row["Designation"],
 			'doj' => $row["DOJ"]
 		);
 		array_push($dataList,$json);
@@ -1020,6 +1022,35 @@ else if($selectType == "complaint"){
 		array_push($dataList, $row);
 	}
 	$output = array('complaintList' => $dataList);
+	echo json_encode($output);
+}
+else if($selectType == "salarySlip"){
+	$filterSql = "";
+	if($loginEmpRoleId == 1){
+		
+	}
+	else{
+		$underEmpList = array();
+		array_push($underEmpList, $loginEmpId);
+
+		$empSql = "SELECT `EmpId` FROM `EmployeeMaster` where `RMId`='$loginEmpId' and `IsActive`=1";
+		$empQuery = mysqli_query($conn,$empSql);
+		while($empRow = mysqli_fetch_assoc($empQuery)){
+			array_push($underEmpList, $empRow["EmpId"]);
+		}
+
+		$empIds = implode("','", $underEmpList);
+		$filterSql .= " and ed.EmpId in ('".$empIds."')";
+	}
+
+	$sql = "SELECT ed.Id as id, e.Name as name, e.Mobile as mobile, ed.Basic as basic, ed.MonthYear as monthYear, ed.PaidDays as paidDays, ed.AfterLossOfPay as lossOfPay, ed.OtherDeductions as tds, ed.Reimbursements as reimbursements, ed.NetSalary as netSalary FROM EmployeeDeductions ed join EmployeeMaster e on ed.EmpId=e.EmpId and e.IsActive=1 WHERE 1=1  $filterSql order by ed.Id desc";
+
+	$query=mysqli_query($conn,$sql);
+	$dataList = array();
+	while($row = mysqli_fetch_assoc($query)){
+		array_push($dataList, $row);
+	}
+	$output = array('salarySlipList' => $dataList);
 	echo json_encode($output);
 }
 

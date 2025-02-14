@@ -16,6 +16,7 @@ if($insertType == "employee" && $methodType === 'POST'){
 	$mobile = $jsonData->mobile;
 	$password = $jsonData->password;
 	$emailId = $jsonData->emailId;
+	$designation = $jsonData->designation;
 	$dob = $jsonData->dob;
 	$dob = str_replace('/', '-', $dob);
 	$dob = date("Y-m-d", strtotime($dob));
@@ -62,7 +63,7 @@ if($insertType == "employee" && $methodType === 'POST'){
 		$employeeId = 'tr'.str_pad($empCount, 3, '0', STR_PAD_LEFT);
 		// $employeeId = $mobile;
 
-		$insertEmployee = "INSERT INTO `EmployeeMaster`(`EmpId`, `Name`, `FatherHusbandName`, `Mobile`, `EmailId`, `Password`, `DOB`, `DOJ`, `Address`, `RoleId`, `AadharNumber`, `AadharAttachment`, `PAN`, `PANAttachment`,`RMId`) VALUES ('$employeeId', '$name', '$fatherHusbandName', '$mobile', '$emailId', '$password', '$dob', '$doj', '$address', 2, '$aadhar', '$aadharStr', '$pan', '$panStr','$rmId')";
+		$insertEmployee = "INSERT INTO `EmployeeMaster`(`EmpId`, `Name`, `FatherHusbandName`, `Designation`, `Mobile`, `EmailId`, `Password`, `DOB`, `DOJ`, `Address`, `RoleId`, `AadharNumber`, `AadharAttachment`, `PAN`, `PANAttachment`,`RMId`) VALUES ('$employeeId', '$name', '$fatherHusbandName', '$designation', '$mobile', '$emailId', '$password', '$dob', '$doj', '$address', 2, '$aadhar', '$aadharStr', '$pan', '$panStr','$rmId')";
 
 		// echo $insertEmployee;
 
@@ -104,21 +105,22 @@ else if($insertType == "deduction" && $methodType === 'POST'){
 	$grossSalary = $jsonData->grossSalary;
 	$retentionBonus = $jsonData->retentionBonus;
 	$professionTax = $jsonData->professionTax;
-	// $lossOfPay = $jsonData->lossOfPay;
-	$lossOfPay = 0;
+	$lossOfPay = $jsonData->lossOfPay;
+	// $lossOfPay = 0;
 	$otherDeductions = $jsonData->otherDeductions;
 	$incomeTax = $jsonData->incomeTax;
 	$otherTax = $jsonData->otherTax;
+	$reimbursements = $jsonData->reimbursements;
 
-	$empLossOfPay = "SELECT `LossOfPay` FROM `EmployeeLossOfPay` where `EmpId` = '$empId' and `MonthYear` = '$month'";
-	$empLossOfPayQuery = mysqli_query($conn,$empLossOfPay);
-	$rowCount = mysqli_num_rows($empLossOfPayQuery);
-	if($rowCount != 0){
-		$empLossOfPayRow = mysqli_fetch_assoc($empLossOfPayQuery);
-		$lossOfPay = $empLossOfPayRow["LossOfPay"];
-	}
+	// $empLossOfPay = "SELECT `LossOfPay` FROM `EmployeeLossOfPay` where `EmpId` = '$empId' and `MonthYear` = '$month'";
+	// $empLossOfPayQuery = mysqli_query($conn,$empLossOfPay);
+	// $rowCount = mysqli_num_rows($empLossOfPayQuery);
+	// if($rowCount != 0){
+	// 	$empLossOfPayRow = mysqli_fetch_assoc($empLossOfPayQuery);
+	// 	$lossOfPay = $empLossOfPayRow["LossOfPay"];
+	// }
 
-	$insertDeduction = "INSERT INTO `EmployeeDeductions`(`EmpId`, `Basic`, `GrossSalary`, `MonthYear`, `PaidDays`, `RetentionBonus`, `ProfessionTax`, `LossOfPay`, `OtherDeductions`, `IncomeTax`, `OtherTax`) VALUES ('$empId', $basic, $grossSalary, '$month', $paidDays, $retentionBonus, $professionTax, $lossOfPay, $otherDeductions, $incomeTax, $otherTax)";
+	$insertDeduction = "INSERT INTO `EmployeeDeductions`(`EmpId`, `Basic`, `GrossSalary`, `MonthYear`, `PaidDays`, `RetentionBonus`, `ProfessionTax`, `LossOfPay`, `OtherDeductions`, `IncomeTax`, `OtherTax`, `Reimbursements`) VALUES ('$empId', $basic, $grossSalary, '$month', $paidDays, $retentionBonus, $professionTax, $lossOfPay, $otherDeductions, $incomeTax, $otherTax, $reimbursements)";
 
 	$output = "";
 	if(mysqli_query($conn,$insertDeduction)){
@@ -127,7 +129,7 @@ else if($insertType == "deduction" && $methodType === 'POST'){
 	}
 	else{
 		$output -> responseCode = "0";
-		$output -> responseDesc = "Something wrong";
+		$output -> responseDesc = "Something went wrong while insert data of deduction";
 	}
 	echo json_encode($output);
 }
@@ -148,16 +150,17 @@ else if($insertType == "uploadDeduction" && $methodType === 'POST'){
 		$otherDeductions = $importData->otherDeductions;
 		$incomeTax = $importData->incomeTax;
 		$otherTax = $importData->otherTax;
+		$reimbursements = $importData->reimbursements;
 
-		$empLossOfPay = "SELECT `LossOfPay` FROM `EmployeeLossOfPay` where `EmpId` = '$empId' and `MonthYear` = '$month'";
-		$empLossOfPayQuery = mysqli_query($conn,$empLossOfPay);
-		$rowCount = mysqli_num_rows($empLossOfPayQuery);
-		if($rowCount != 0){
-			$empLossOfPayRow = mysqli_fetch_assoc($empLossOfPayQuery);
-			$lossOfPay = $empLossOfPayRow["LossOfPay"];
-		}
+		// $empLossOfPay = "SELECT `LossOfPay` FROM `EmployeeLossOfPay` where `EmpId` = '$empId' and `MonthYear` = '$month'";
+		// $empLossOfPayQuery = mysqli_query($conn,$empLossOfPay);
+		// $rowCount = mysqli_num_rows($empLossOfPayQuery);
+		// if($rowCount != 0){
+		// 	$empLossOfPayRow = mysqli_fetch_assoc($empLossOfPayQuery);
+		// 	$lossOfPay = $empLossOfPayRow["LossOfPay"];
+		// }
 
-		$insertDeduction = "INSERT INTO `EmployeeDeductions`(`EmpId`, `Basic`, `GrossSalary`, `MonthYear`, `PaidDays`, `RetentionBonus`, `ProfessionTax`, `LossOfPay`, `OtherDeductions`, `IncomeTax`, `OtherTax`) VALUES ('$empId', $basic, $grossSalary, '$month', $paidDays, $retentionBonus, $professionTax, $lossOfPay, $otherDeductions, $incomeTax, $otherTax)";
+		$insertDeduction = "INSERT INTO `EmployeeDeductions`(`EmpId`, `Basic`, `GrossSalary`, `MonthYear`, `PaidDays`, `RetentionBonus`, `ProfessionTax`, `LossOfPay`, `OtherDeductions`, `IncomeTax`, `OtherTax`, `Reimbursements`) VALUES ('$empId', $basic, $grossSalary, '$month', $paidDays, $retentionBonus, $professionTax, $lossOfPay, $otherDeductions, $incomeTax, $otherTax, $reimbursements)";
 		// echo $insertDeduction.'---';
 		if(mysqli_query($conn,$insertDeduction)){
 			// Succfully insert
@@ -194,16 +197,25 @@ else if($insertType == "offerLetter" && $methodType === 'POST'){
 	$doj = str_replace('/', '-', $doj);
 	$doj = date("Y-m-d", strtotime($doj));
 	$lpa = $jsonData->lpa;
+	$status = 0;
+	$isRegisteredEmp = 0;
+	if($intervieweeId == 0){
+		$status = 1;
+		$isRegisteredEmp = 1;
+	}
 
-	$insertOffer = "INSERT INTO `OfferLetter`(`Name`, `Mobile`, `EmailId`, `OfficeLocation`, `AddressLine1`, `AddressLine2`, `Designation`, `DOJ`, `LPA`, `OfferDate`, `OfferExpierDate`) VALUES ('$name', '$mobile', '$emailId', '$officeLocation', '$addLine1', '$addLine2', '$designation', '$doj', '$lpa', '$offerDate', '$offerExpireDate')";
+	$insertOffer = "INSERT INTO `OfferLetter`(`Name`, `Mobile`, `EmailId`, `OfficeLocation`, `AddressLine1`, `AddressLine2`, `Designation`, `DOJ`, `LPA`, `OfferDate`, `OfferExpierDate`, `Status`, `IsRegisteredEmp`, `IntervieweeId`) VALUES ('$name', '$mobile', '$emailId', '$officeLocation', '$addLine1', '$addLine2', '$designation', '$doj', '$lpa', '$offerDate', '$offerExpireDate', $status, $isRegisteredEmp, $intervieweeId)";
 
 	$output = "";
 	if(mysqli_query($conn,$insertOffer)){
 		$output -> responseCode = "100000";
 		$output -> responseDesc = "Successfully inserted";
 
-		$updateInterview = "UPDATE `Interviewee` set `IsOfferGenerate` = 1 where `Id` = $intervieweeId";
-		mysqli_query($conn,$updateInterview);
+		if($intervieweeId != "0"){
+			$updateInterview = "UPDATE `Interviewee` set `IsOfferGenerate` = 1 where `Id` = $intervieweeId";
+			mysqli_query($conn,$updateInterview);
+		}	
+			
 	}
 	else{
 		$output -> responseCode = "0";

@@ -31,6 +31,7 @@ $lpa = $row["LPA"];
 $validDate = date('d-F-Y', strtotime($row["OfferExpierDate"]));
 $expValiDate = explode("-", $validDate);
 $validDate = $expValiDate[0].'th '.$expValiDate[1].' '.$expValiDate[2];
+$intervieweeId = $row["IntervieweeId"];
 
 $officeTime = "";
 $officeAddress = "";
@@ -56,11 +57,15 @@ $msg .= "<p style='font-size : 16px !important'>"."Dear $empName, "."</p>";
 $msg .= "<p style='font-size : 16px !important'>"."Greetings of the day!!!"."</p>";
 $msg .= "<p style='font-size : 16px !important'>"."On behalf of the entire company, I'd like to say that it brings me great pleasure to formally offer you the position of <b>$designation</b> at <b>Trinity Mobile App Lab Pvt</b>. A huge congratulations to you!"."</p>";
 $msg .= "<p style='font-size : 16px !important'>"."Your employment start date is <b>$dayName, $joinDate</b>. You'll be greeted at <b>$officeTime at $officeAddress</b>. Please arrive a few minutes early on your first day."."</p>";
-$msg .= "<p style='font-size : 16px !important'>"."You must print, sign, and scan the form. Please email it back to us by EOD <b>$validDate</b>, to the email address."."<p>";
-$msg .= "<p style='font-size : 16px !important'>"."Directions on how to accept the offer: add an electronic signature (below) or print, sign and scan this letter back to us by EOD <b>$validDate</b>. Scan to the email address at the end of this letter. The offer expires on <b>$validDate</b>. The signing of the offer states that you understand your status as an at-will employee."."</p>";
+if($intervieweeId != "0"){
+    $msg .= "<p style='font-size : 16px !important'>"."You must print, sign, and scan the form. Please email it back to us by EOD <b>$validDate</b>, to the email address."."<p>";
+    $msg .= "<p style='font-size : 16px !important'>"."Directions on how to accept the offer: add an electronic signature (below) or print, sign and scan this letter back to us by EOD <b>$validDate</b>. Scan to the email address at the end of this letter. The offer expires on <b>$validDate</b>. The signing of the offer states that you understand your status as an at-will employee."."</p>";
+}
 $msg .= "<p style='font-size : 16px !important'>"."Welcome onboard! If you have questions about anything prior to your first day, don't hesitate to reach out: <a href='mailto:shruti@trinityapplab.co.in'>shruti@trinityapplab.co.in</a>"."</p>";
-$msg .= "<a style='text-decoration:none;padding:10px;background-color:green;color:white;border-radius:10px' href='www.trinityapplab.in/Company/offerLetterAction.php?mobile=$mobile&action=1' target='blank'>Approve</a>"."&nbsp;&nbsp;";
-$msg .= "<a style='text-decoration:none;padding:10px;background-color:red;color:white;border-radius:10px' href='www.trinityapplab.in/Company/offerLetterAction.php?mobile=$mobile&action=2' target='blank'>Reject</a>";
+if($intervieweeId != "0"){
+    $msg .= "<a style='text-decoration:none;padding:10px;background-color:green;color:white;border-radius:10px' href='www.trinityapplab.in/Company/offerLetterAction.php?mobile=$mobile&action=1' target='blank'>Approve</a>"."&nbsp;&nbsp;";
+    $msg .= "<a style='text-decoration:none;padding:10px;background-color:red;color:white;border-radius:10px' href='www.trinityapplab.in/Company/offerLetterAction.php?mobile=$mobile&action=2' target='blank'>Reject</a>";
+}
 // $msg .= "PFA"."<br><br>";
 // $msg .= "Regards"."<br>";
 // $msg .= "Trinity Automation Team.";

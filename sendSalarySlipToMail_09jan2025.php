@@ -1,11 +1,21 @@
 <?php
 include("dbConfiguration.php");
 require('PDFGenerator/fpdf.php');
+require 'SendMailClass.php';
 
-$todayDate = date('d-M-Y', strtotime('0 day'));
+$methodType = $_SERVER['REQUEST_METHOD'];
+if($methodType != "POST"){
+    return;
+}
 
-$empId=$_REQUEST['empId'];
-$monthYear=$_REQUEST['monthYear'];
+// $todayDate = date('d-M-Y', strtotime('0 day'));
+
+$json = file_get_contents('php://input');
+$jsonData = json_decode($json);
+
+$empId = $jsonData->empId;
+$monthYear=$jsonData->monthYear;
+
 $sql = "SELECT e.Name, e.FatherHusbandName, e.Mobile, e.EmailId, date_format(e.DOB,'%d-%b-%Y') as DOB, date_format(e.DOJ,'%d-%b-%Y') as DOJ, e.PAN, ed.Basic, ee.HRA, ee.ConveyanceAllowance, ee.MedicalAllowance, ee.TelephoneAllowance, ee.SpecialAllowance, ee.OtherAllowance, ed.GrossSalary, ed.MonthYear, ed.PaidDays, ed.RetentionBonus, ed.ProfessionTax, ed.AfterProfessionTax, ed.LossOfPay, ed.AfterLossOfPay, ed.OtherDeductions, ed.IncomeTax, ed.AfterIncomeTax, ed.OtherTax, ed.AfterOtherTax, ed.TotalDeductions, ed.Reimbursements, ed.NetSalary FROM EmployeeMaster e join EmployeeEarnings ee on e.EmpId = ee.EmpId left join EmployeeDeductions ed on e.EmpId = ed.EmpId where e.EmpId = '$empId' and ed.MonthYear = '$monthYear' ";
 $query=mysqli_query($conn,$sql);
 $row = mysqli_fetch_assoc($query);
@@ -73,7 +83,7 @@ $pdf->Cell(40,7,'DOB',1);
 $pdf->SetFont('Times','B',12);
 $pdf->Cell(55,7,$row["DOB"],1);
 $pdf->SetFont('Times','',12);
-$pdf->Cell(40,7,'Pan No',1);
+$pdf->Cell(40,7,'PAN No',1);
 $pdf->SetFont('Times','B',12);
 $pdf->Cell(55,7,$row["PAN"],1);
 $pdf->Ln(7);
@@ -214,7 +224,36 @@ $pdf->Ln(7);
 
 $pdf->SetFont('Times','B',12);
 $pdf->Cell(0,7,'Note : This is computer generated, signature not require.',0);
-$pdf->Output();
+
+
+$dir = "SalarySlip_".$monthYear;
+if (!file_exists('/var/www/trinityapplab.in/html/Company/files/'.$dir)) {
+    mkdir('/var/www/trinityapplab.in/html/Company/files/'.$dir, 0777, true);
+}
+$pdfFileName = $row["Mobile"].".pdf";
+$pdf->Output("/var/www/trinityapplab.in/html/Company/files/".$dir."/".$pdfFileName,"F");
+
+$empName = $row["Name"];
+$toMailId = $row["EmailId"];
+$msg = "Dear $empName, "."<br>";
+$msg .= "Please find Salary Slip for $monthYear."."<br><br>";
+$msg .= "PFA"."<br><br>";
+$msg .= "Regards"."<br>";
+$msg .= "Trinity Automation Team.";
+
+$subject = "Salary Slip - ".$monthYear;
+$classObj = new SendMailClass();
+$mailStatus = $classObj->sendLeaveMailJustMe($toMailId, $subject, $msg, "/var/www/trinityapplab.in/html/Company/files/".$dir."/".$pdfFileName);
+$output = "";
+if($mailStatus){
+    $output -> responseCode = "100000";
+    $output -> responseDesc = "Salary slip send to your mail id";
+}
+else{
+    $output -> responseCode = "0";
+    $output -> responseDesc = "Something wrong";
+}
+echo json_encode($output);
 ?>
 
 <?php 

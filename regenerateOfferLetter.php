@@ -11,7 +11,6 @@ $json = file_get_contents('php://input');
 $jsonData = json_decode($json);
 $mobile = $jsonData->mobile;
 
-$date = date('d-F-Y', strtotime('0 day'));
 $sql = "SELECT * FROM `OfferLetter` where `Mobile` = '$mobile'";
 $query = mysqli_query($conn,$sql);
 $row = mysqli_fetch_assoc($query);
@@ -24,12 +23,15 @@ $officeLocation = $row["OfficeLocation"];
 $add1 = $row["AddressLine1"];
 $add2 = $row["AddressLine2"];
 $joinDate = $row["DOJ"];
+$offerDate = $row["OfferDate"];
+$date = date("d-F-Y", strtotime($offerDate));
 $doj = date("d-F-Y", strtotime($joinDate));
 $dayName = date('l', strtotime($joinDate));
 $expDoj = explode("-", $doj);
 $joinDate = $expDoj[0].'th '.$expDoj[1].' '.$expDoj[2];
 $lpa = $row["LPA"];
-$validDate = date('d-F-Y', strtotime('3 day'));
+$offerExpierDate = $row["OfferExpierDate"];
+$validDate = date('d-F-Y', strtotime($offerExpierDate));
 $expValiDate = explode("-", $validDate);
 $validDate = $expValiDate[0].'th '.$expValiDate[1].' '.$expValiDate[2];
 $intervieweeId = $row["IntervieweeId"];
@@ -240,8 +242,9 @@ if($intervieweeId != "0"){
 $msg .= "</body></html>";
 
 $subject = "Offer Letter";
-$classObj = new SendMailClass();
-$response = $classObj->sendMailOfferLetter($toMailId, $subject, $msg, "/var/www/trinityapplab.in/html/Company/files/".$dir."/".$pdfFileName);
+// $classObj = new SendMailClass();
+// $response = $classObj->sendMailOfferLetter($toMailId, $subject, $msg, "/var/www/trinityapplab.in/html/Company/files/".$dir."/".$pdfFileName);
+$response = true;
 
 $output = "";
 if($response){

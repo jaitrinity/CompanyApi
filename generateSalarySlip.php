@@ -33,7 +33,7 @@ while($row = mysqli_fetch_assoc($query)){
     $pdf->Cell(0,7,'TRINITY MOBILE APP LAB PVT. LTD.',1,0,'C');
     $pdf->Ln(7);
     $pdf->Cell(40,7,'',0);
-    $pdf->Cell(0,7,'Office No: C-313, Noida One, B-8',1,0,'C');
+    $pdf->Cell(0,7,'Office No: B-417, Noida One, B-8',1,0,'C');
     $pdf->Ln(7);
     $pdf->Cell(40,7,'',0);
     $pdf->Cell(0,7,'Sector-62, Noida (UP) - 201309.',1,0,'C');
