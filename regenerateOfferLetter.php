@@ -11,7 +11,8 @@ $json = file_get_contents('php://input');
 $jsonData = json_decode($json);
 $mobile = $jsonData->mobile;
 
-$sql = "SELECT * FROM `OfferLetter` where `Mobile` = '$mobile'";
+// $sql = "SELECT * FROM `OfferLetter` where `Mobile` = '$mobile'";
+$sql = "SELECT ol.*, om.OfficeTime, om.OfficeAddress FROM OfferLetter ol left join OfficeMaster om on ol.OfficeLocation=om.OfficeLocation where ol.Mobile='$mobile'";
 $query = mysqli_query($conn,$sql);
 $row = mysqli_fetch_assoc($query);
 
@@ -35,17 +36,16 @@ $validDate = date('d-F-Y', strtotime($offerExpierDate));
 $expValiDate = explode("-", $validDate);
 $validDate = $expValiDate[0].'th '.$expValiDate[1].' '.$expValiDate[2];
 $intervieweeId = $row["IntervieweeId"];
-
-$officeTime = "";
-$officeAddress = "";
-if($officeLocation == "Noida"){
-    $officeTime = "9:30 A.M.";
-    $officeAddress = "Office No: B-417, Noida One, B-8,Sector-62, Noida (UP) - 201309";
-}
-else{
-    $officeTime = "2:00 PM";
-    $officeAddress = "11th Floor, A- Block, The First, Beside ITC Narmada, Vastrapur, Ahmedabad – 380015";
-}
+$officeTime = $row["OfficeTime"];
+$officeAddress = $row["OfficeAddress"];
+// if($officeLocation == "Noida"){
+//     $officeTime = "9:30 A.M.";
+//     $officeAddress = "Office No: B-417, Noida One, B-8,Sector-62, Noida (UP) - 201309";
+// }
+// else{
+//     $officeTime = "2:00 PM";
+//     $officeAddress = "11th Floor, A- Block, The First, Beside ITC Narmada, Vastrapur, Ahmedabad – 380015";
+// }
 
 class PDF extends PDF_Rotate
 {
@@ -73,10 +73,10 @@ class PDF extends PDF_Rotate
 		// Position at 1.5 cm from bottom
     	$this->SetY(-15);
 	    $this->SetFont('Times','',12);
-	    $this->Cell(95,5,'Office No: B-417, Noida One, B-8,',0);
+	    $this->Cell(95,5,'Graphix - 2, A - 13, 10th Floor,',0);
 		$this->Cell(95,5,'ayush.agarwal@trinityapplab.co.in',0,0,'R');
 		$this->Ln(5);
-		$this->Cell(95,5,'Sector-62, Noida (UP) - 201309.',0);
+		$this->Cell(95,5,'Sector - 62, Noida - 201301, Uttar Pradesh.',0);
 		$this->Cell(95,5,'www.trinityapplab.com',0,0,'R');
 
 	}

@@ -112,6 +112,7 @@ else{
 					$lastTransHdrId = $conn->insert_id;
 					$fromDate = "";
 					$toDate = "";
+					$halfDay = "";
 					$reason = "";
 					foreach($checklist as $k=>$v)
 					{
@@ -127,6 +128,9 @@ else{
 							}
 							if($chkp_id == 2){
 								$toDate = $answer;
+							}
+							if($chkp_id == 120){
+								$halfDay = $answer;
 							}
 							if($chkp_id == 3){
 								$reason = $answer;
@@ -144,6 +148,9 @@ else{
 								$toDate = $answer;
 								$toDate = str_replace('/', '-', $toDate);
 								$toDate = date("Y-m-d", strtotime($toDate));
+							}
+							if($chkp_id == 120){
+								$halfDay = $answer;
 							}
 							if($chkp_id == 3){
 								$reason = $answer;
@@ -180,9 +187,9 @@ else{
 
 							$monthImplode = implode(",", $monthList);
 
-							$insertLeave = "INSERT INTO `LeaveMaster`(`EmpId`, `FromDate`, `ToDate`, `Reason`, `MonthInclude`, `ActivityId`) VALUES (?,?,?,?,?,?)";
+							$insertLeave = "INSERT INTO `LeaveMaster`(`EmpId`, `FromDate`, `ToDate`, `HalfDay`, `Reason`, `MonthInclude`, `ActivityId`) VALUES (?,?,?,?,?,?,?)";
 							$stmt = $conn->prepare($insertLeave);
-							$stmt->bind_param("sssssi", $empId, $fromDate, $toDate, $reason, $monthImplode, $activityId);
+							$stmt->bind_param("ssssssi", $empId, $fromDate, $toDate, $halfDay, $reason, $monthImplode, $activityId);
 							if($stmt->execute()){
 								$leaveId = $conn->insert_id;
 

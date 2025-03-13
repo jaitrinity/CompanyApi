@@ -139,7 +139,12 @@ if($empStatus != ""){
 		$msgStatus = true;
 	}
 	else{
-		$msgStatus = sendOtp($mobile,$taskotp,$conn);
+
+		require 'SendOtpClass.php';
+		$classObj = new SendOtpClass();
+		$otpResponse = $classObj->sendOtp($mobile, $taskotp, 'Trinity');
+		$responseData = json_decode($otpResponse);
+		$msgStatus = $responseData->return;
 	}
 	
 	if($msgStatus == true){
@@ -239,56 +244,4 @@ echo json_encode($output);
 
 
 	
-?>
-
-<?php
-function sendOtp($mobile,$taskotp,$conn)
-{
-	//api for sending the otp
-	$mobile=$mobile;
-	$newotp .= "$taskotp";
-	$appName = "Trinity";
-	$msg = "Your one time password (OTP) is ".$newotp." for ".$appName." application.";
-	$apikey = "ae6fa4-5cab56-4bc26d-caa56f-b27aab";
-	$mobileNumber =$mobile;
-	$senderId = "TRIAPP";
-	$message = "$msg";
-	$route = "default";
-	$st = true;
-	$postData = array(
-            'apikey' => $apikey,	
-	    'dest_mobileno' => $mobileNumber,
-	    'message' => $message,
-	    'senderid' => $senderId,
-	    'route' => $route,
-	    'response' => "Y",
-	    'msgtype' => "TXT"
-	);
-	$url="http://www.smsjust.com/sms/user/urlsms.php";
-	// init the resource
-	$ch = curl_init();
-	curl_setopt_array($ch, array(
-	    CURLOPT_URL => $url,
-	    CURLOPT_RETURNTRANSFER => true,
-	    CURLOPT_POST => true,
-	    CURLOPT_POSTFIELDS => $postData
-	    //,CURLOPT_FOLLOWLOCATION => true
-
-	));
-		//Ignore SSL certificate verification
-	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-	//get response
-	$output = curl_exec($ch);
-	//Print error if any
-	if(curl_errno($ch))
-	{
-	    echo 'error:' . curl_error($ch);
-		$st = false;
-	}
-	curl_close($ch);
-	return $st;
-	
-}
-
 ?>

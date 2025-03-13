@@ -18,6 +18,7 @@ class LeaveBalanceClass{
 		$empId = $row["EmpId"];
 		$fromDate = $row["FromDate"];
 		$toDate = $row["ToDate"];
+		$halfDay = $row["HalfDay"];
 		$dateList = $this->getDatesFromRange($fromDate, $toDate);
 		for($i=0;$i<count($dateList);$i++){
 			$thisDate = $dateList[$i];
@@ -31,7 +32,11 @@ class LeaveBalanceClass{
 		$leaveBalance = "SELECT `LeaveBalance` FROM `EmployeeMaster` where `EmpId` = '$empId'";
 		$leaveBalanceQuery = mysqli_query($conn,$leaveBalance);
 		$leaveBalanceRow = mysqli_fetch_assoc($leaveBalanceQuery);
-		$empLeaveBalance = $leaveBalanceRow["LeaveBalance"];	
+		$empLeaveBalance = $leaveBalanceRow["LeaveBalance"];
+
+		if($halfDay == "Yes"){
+			$actualLeave = $actualLeave - 0.5;
+		}	
 
 		$remainEmpLeave = 0;
 		if($empLeaveBalance > $actualLeave){

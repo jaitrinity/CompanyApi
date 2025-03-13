@@ -181,7 +181,7 @@ else if($selectType == "offerLetter"){
 	echo json_encode($output);
 }
 else if($selectType == "leaves"){
-	$sql = "SELECT l.Id, l.EmpId, e.Name, l.FromDate, l.ToDate, l.Reason, l.Reason, l.Status, l.ActivityId, (case when l.Status = 0 then 'Pending' when l.Status = 1 then 'Approved' when l.Status = 2 then 'Rejected' end) as LeaveStatus, e.LeaveBalance FROM LeaveMaster l join EmployeeMaster e on l.EmpId = e.EmpId where 1=1 ";
+	$sql = "SELECT l.Id, l.EmpId, e.Name, l.FromDate, l.ToDate, l.HalfDay, l.Reason, l.Reason, l.Status, l.ActivityId, (case when l.Status = 0 then 'Pending' when l.Status = 1 then 'Approved' when l.Status = 2 then 'Rejected' end) as LeaveStatus, e.LeaveBalance FROM LeaveMaster l join EmployeeMaster e on l.EmpId = e.EmpId where 1=1 ";
 	if($loginEmpRoleId != 1){
 		$sql .= " and l.EmpId = '$loginEmpId' ";
 	}
@@ -193,6 +193,7 @@ else if($selectType == "leaves"){
 		$name = $row["Name"];
 		$fromDate = $row["FromDate"];
 		$toDate = $row["ToDate"];
+		$halfDay = $row["HalfDay"];
 		$reason = $row["Reason"];
 		$status = $row["Status"];
 		$leaveStatus = $row["LeaveStatus"];
@@ -203,6 +204,7 @@ else if($selectType == "leaves"){
 			'name' => $name,
 			'fromDate' => $fromDate,
 			'toDate' => $toDate,
+			'halfDay' => $halfDay,
 			'reason' => $reason,
 			'status' => $status,
 			'leaveStatus' => $leaveStatus,

@@ -36,10 +36,10 @@ class PDF extends FPDF
         // Position at 1.5 cm from bottom
         $this->SetY(-15);
         $this->SetFont('Times','',12);
-        $this->Cell(95,5,'Office No: B-417, Noida One, B-8,',0);
+        $this->Cell(95,5,'Graphix - 2, A - 13, 10th Floor,',0);
         // $this->Cell(95,5,'ayush.agarwal@trinityapplab.co.in',0,0,'R');
         $this->Ln(5);
-        $this->Cell(95,5,'Sector-62, Noida (UP) - 201309.',0);
+        $this->Cell(95,5,'Sector - 62, Noida - 201301, Uttar Pradesh.',0);
         $this->Cell(95,5,'www.trinityapplab.com',0,0,'R');
 
     }
@@ -54,9 +54,9 @@ $pdf->SetDrawColor(0);
 $pdf->SetFont('Times','B',12);
 $pdf->Cell(0,7,'TRINITY MOBILE APP LAB PVT. LTD.',1,0,'C');
 $pdf->Ln(7);
-$pdf->Cell(0,7,'Office No: B-417, Noida One, B-8',1,0,'C');
+$pdf->Cell(0,7,'Graphix - 2, A - 13, 10th Floor',1,0,'C');
 $pdf->Ln(7);
-$pdf->Cell(0,7,'Sector-62, Noida (UP) - 201309.',1,0,'C');
+$pdf->Cell(0,7,'Sector - 62, Noida - 201301, Uttar Pradesh.',1,0,'C');
 $pdf->Ln(7);
 $pdf->SetFont('Times','',12);
 $pdf->Cell(0,7,'Pay Slip for the Month of '.$row["MonthYear"],1,0,'C');
@@ -157,13 +157,23 @@ $pdf->Cell(40,7,moneyFormatIndia($row["TotalDeductions"]),1,0,'R');
 $pdf->Ln(7);
 
 $pdf->SetFont('Times','',12);
-$pdf->Cell(55,7,'',1);
+$pdf->Cell(55,7,'Special Allowance',1);
 $pdf->SetFont('Times','B',12);
-$pdf->Cell(40,7,'',1,0,'R');
+$pdf->Cell(40,7,moneyFormatIndia($row["SpecialAllowance"]),1,0,'R');
 $pdf->SetFont('Times','',12);
 $pdf->Cell(55,7,'Reimbursements',1);
 $pdf->SetFont('Times','B',12);
 $pdf->Cell(40,7,moneyFormatIndia($row["Reimbursements"]),1,0,'R');
+$pdf->Ln(7);
+
+$pdf->SetFont('Times','',12);
+$pdf->Cell(55,7,'Other Allowance',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(40,7,moneyFormatIndia($row["OtherAllowance"]),1,0,'R');
+$pdf->SetFont('Times','',12);
+$pdf->Cell(55,7,'',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(40,7,'',1);
 $pdf->Ln(7);
 
 $pdf->SetFont('Times','',12);

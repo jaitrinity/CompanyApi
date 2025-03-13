@@ -15,7 +15,7 @@ if(mysqli_query($conn,$updateLeave)){
 	$output -> responseCode = "100000";
 	$output -> responseDesc = "Successfully update";
 
-	$sql = "SELECT l.EmpId, e.Name, e.EmailId, e.LeaveBalance, l.FromDate, l.ToDate, l.IsLeaveBalanceCalculated FROM LeaveMaster l join EmployeeMaster e on l.EmpId = e.EmpId where l.Id = $leaveId";
+	$sql = "SELECT l.EmpId, e.Name, e.EmailId, e.LeaveBalance, l.FromDate, l.ToDate, l.HalfDay, l.IsLeaveBalanceCalculated FROM LeaveMaster l join EmployeeMaster e on l.EmpId = e.EmpId where l.Id = $leaveId";
 
 	$query = mysqli_query($conn,$sql);
 	$row = mysqli_fetch_assoc($query);
@@ -25,6 +25,7 @@ if(mysqli_query($conn,$updateLeave)){
 	$leaveBalance = $row["LeaveBalance"];
 	$fromDate = $row["FromDate"];
 	$toDate = $row["ToDate"];
+	$halfDay = $row["HalfDay"];
 	$ilbc = $row["IsLeaveBalanceCalculated"];
 
 	$msg = "Dear $name,"."<br>";
@@ -40,6 +41,10 @@ if(mysqli_query($conn,$updateLeave)){
 					$actualLeave++;
 				}
 			}
+
+			if($halfDay == "Yes"){
+				$actualLeave = $actualLeave - 0.5;
+			}
 			
 			$empLeaveBalance = $leaveBalance;	
 
@@ -51,6 +56,7 @@ if(mysqli_query($conn,$updateLeave)){
 				// $remainEmpLeave = $actualLeave - $empLeaveBalance;
 				$remainEmpLeave = 0;
 			}
+
 
 			$updateRemainLeave = "UPDATE `EmployeeMaster` set `LeaveBalance`=$remainEmpLeave where `EmpId`='$empId'";
 			if(mysqli_query($conn,$updateRemainLeave)){

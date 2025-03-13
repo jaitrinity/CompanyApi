@@ -232,6 +232,7 @@ else if($insertType == "saveLeave" && $methodType === 'POST'){
 	$toDate = $jsonData->toDate;
 	$toDate = str_replace('/', '-', $toDate);
 	$toDate = date("Y-m-d", strtotime($toDate));
+	$halfDay = $jsonData->halfDay;
 	$reason = $jsonData->reason;
 
 	$monthList = array();
@@ -251,9 +252,9 @@ else if($insertType == "saveLeave" && $methodType === 'POST'){
 
 	$monthImplode = implode(",", $monthList);
 
-	$insertLeave = "INSERT INTO `LeaveMaster`(`EmpId`, `FromDate`, `ToDate`, `Reason`, `MonthInclude`) VALUES (?,?,?,?,?)";
+	$insertLeave = "INSERT INTO `LeaveMaster`(`EmpId`, `FromDate`, `ToDate`, `HalfDay`, `Reason`, `MonthInclude`) VALUES (?,?,?,?,?,?)";
 	$stmt = $conn->prepare($insertLeave);
-	$stmt->bind_param("sssss", $empId, $fromDate, $toDate, $reason, $monthImplode);
+	$stmt->bind_param("ssssss", $empId, $fromDate, $toDate, $halfDay, $reason, $monthImplode);
 	$output = "";
 	if($stmt->execute()){
 		$leaveId = $conn->insert_id;
@@ -280,9 +281,9 @@ else if($insertType == "saveLeave" && $methodType === 'POST'){
 					$toDate1 = $exToDate[2]."/".$exToDate[1]."/".$exToDate[0];
 
 					$insertInTransDtl="INSERT INTO `TransactionDTL`(`ActivityId`, `ChkId`, `Value`, `DependChkId`) 
-					VALUES (?,1,?,0),(?,2,?,0),(?,3,?,0)";
+					VALUES (?,1,?,0),(?,2,?,0),(?,120,?,0),(?,3,?,0)";
 					$stmt = $conn->prepare($insertInTransDtl);
-					$stmt->bind_param("isisis", $activityId, $fromDate1, $activityId, $toDate1, $activityId, $reason);
+					$stmt->bind_param("isisisis", $activityId, $fromDate1, $activityId, $toDate1, $activityId, $halfDay, $activityId, $reason);
 					$stmt->execute();
 
 					$updateActId = "UPDATE `LeaveMaster` set `ActivityId` = $activityId where `Id` = $leaveId";
@@ -334,6 +335,7 @@ else if($insertType == "updateLeave" && $methodType === 'POST'){
 	$toDate = $jsonData->toDate;
 	$toDate = str_replace('/', '-', $toDate);
 	$toDate = date("Y-m-d", strtotime($toDate));
+	$halfDay = $jsonData->halfDay;
 	$reason = $jsonData->reason;
 	$activityId = $jsonData->activityId;
 
@@ -354,9 +356,9 @@ else if($insertType == "updateLeave" && $methodType === 'POST'){
 
 	$monthImplode = implode(",", $monthList);
 
-	$insertLeave = "UPDATE `LeaveMaster` set `FromDate`=?, `ToDate`=?, `Reason`=?, `MonthInclude`=? where `Id`=?";
+	$insertLeave = "UPDATE `LeaveMaster` set `FromDate`=?, `ToDate`=?, `HalfDay`=?, `Reason`=?, `MonthInclude`=? where `Id`=?";
 	$stmt = $conn->prepare($insertLeave);
-	$stmt->bind_param("ssssi", $fromDate, $toDate, $reason, $monthImplode, $leaveId);
+	$stmt->bind_param("sssssi", $fromDate, $toDate, $halfDay, $reason, $monthImplode, $leaveId);
 	$output = "";
 	if($stmt->execute()){
 		$output -> responseCode = "100000";
@@ -376,7 +378,13 @@ else if($insertType == "updateLeave" && $methodType === 'POST'){
 		$stmt = $conn->prepare($updateDet);
 		$stmt->execute();
 
+		$updateDet = "UPDATE `TransactionDTL` set `Value`=? where `ChkId`=120 and `ActivityId`=$activityId";
+		$stmt = $conn->prepare($sql);
+		$stmt->bind_param("s", $halfDay);
+		$stmt->execute();
+
 		$updateDet = "UPDATE `TransactionDTL` set `Value`=? where `ChkId`=3 and `ActivityId`=$activityId";
+		$stmt = $conn->prepare($sql);
 		$stmt->bind_param("s", $reason);
 		$stmt->execute();
 

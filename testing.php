@@ -33,10 +33,26 @@
 // $address = $classObj->getAddressByLatLong($lat, $long);
 // echo $address;
 
-require 'LeaveBalanceClass.php';
-$classObj = new LeaveBalanceClass();
-$leaveId = 106;
-$leaveBalance = $classObj->getLeaveBalance($leaveId);
-echo $leaveBalance;
+// require 'LeaveBalanceClass.php';
+// $classObj = new LeaveBalanceClass();
+// $leaveId = 106;
+// $leaveBalance = $classObj->getLeaveBalance($leaveId);
+// echo $leaveBalance;
 
+$randomPassword = randomPassword();
+echo $randomPassword;
+
+?>
+
+<?php
+function randomPassword() {
+    $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    $pass = array(); //remember to declare $pass as an array
+    $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+    for ($i = 0; $i < 10; $i++) {
+        $n = rand(0, $alphaLength);
+        $pass[] = $alphabet[$n];
+    }
+    return implode($pass); //turn the array into a string
+}
 ?>
