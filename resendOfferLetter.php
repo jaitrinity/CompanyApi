@@ -148,15 +148,15 @@ function sendMail($toMailId, $msg, $attachment){
     $mail->isSMTP();                                      
     $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
-    $mail->Username = 'communication@trinityapplab.co.in';
-    $mail->Password = 'communication@Trinity';   
+    $mail->Username = '[Username]';
+    $mail->Password = '[Password]';   
     $mail->Port = 587;
     $mail->SMTPSecure = 'tls';
     
     // To mail's
     $mail->addAddress($toMailId);
 
-    $mail->setFrom("communication@trinityapplab.co.in","Trinity");
+    $mail->setFrom("[setFrom]","Trinity");
     $mail->addAttachment($attachment);
     $mail->isHTML(true);   
 
