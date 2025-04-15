@@ -1,4 +1,6 @@
 <?php 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers:content-type");
 $conn = mysqli_connect("[hostname]","[username]","[password]","[dbname]");
 // $currentYear = "2024";
 $currentYear = date('Y');
@@ -10,7 +12,7 @@ if($rowCount == 0){
 	return;
 }
 $table = "<table style='font-size:40px' border=1 cellspacing=0 cellpadding=5>
-	<thread>
+	<thead>
 		<tr>
 			<th>Name</th>
 			<th>Day</th>

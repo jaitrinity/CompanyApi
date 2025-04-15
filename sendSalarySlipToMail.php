@@ -16,13 +16,20 @@ $jsonData = json_decode($json);
 $empId = $jsonData->empId;
 $monthYear=$jsonData->monthYear;
 
-$sql = "SELECT e.Name, e.FatherHusbandName, e.Designation, e.Mobile, e.EmailId, date_format(e.DOB,'%d-%b-%Y') as DOB, date_format(e.DOJ,'%d-%b-%Y') as DOJ, e.PAN, ed.Basic, ee.HRA, ee.ConveyanceAllowance, ee.MedicalAllowance, ee.TelephoneAllowance, ee.SpecialAllowance, ee.OtherAllowance, ed.GrossSalary, ed.MonthYear, ed.PaidDays, ed.RetentionBonus, ed.ProfessionTax, ed.AfterProfessionTax, ed.LossOfPay, ed.AfterLossOfPay, ed.OtherDeductions, ed.IncomeTax, ed.AfterIncomeTax, ed.OtherTax, ed.AfterOtherTax, ed.TotalDeductions, ed.Reimbursements, ed.NetSalary FROM EmployeeMaster e join EmployeeEarnings ee on e.EmpId = ee.EmpId left join EmployeeDeductions ed on e.EmpId = ed.EmpId where e.EmpId = '$empId' and ed.MonthYear = '$monthYear' ";
+$sql = "SELECT `Line1`, `Line2` FROM `OfficeMaster` where `Id`=1";
+$query=mysqli_query($conn,$sql);
+$row = mysqli_fetch_assoc($query);
+$line1 = $row["Line1"];
+$line2 = $row["Line2"];
+
+$sql = "SELECT e.Name, e.FatherHusbandName, e.Designation, e.Mobile, e.EmailId, date_format(e.DOB,'%d-%b-%Y') as DOB, date_format(e.DOJ,'%d-%b-%Y') as DOJ, e.PAN, ed.Basic, ee.HRA, ee.ConveyanceAllowance, ee.MedicalAllowance, ee.TelephoneAllowance, ee.SpecialAllowance, ee.OtherAllowance, ed.GrossSalary, ed.MonthYear, ed.PaidDays, ed.RetentionBonus, ed.ProfessionTax, ed.AfterProfessionTax, ed.LossOfPay, ed.AfterLossOfPay, ed.OtherDeductions, ed.IncomeTax, ed.AfterIncomeTax, ed.OtherTax, ed.AfterOtherTax, ed.TotalDeductions, ed.Reimbursements, ed.NetSalary, ed.SalarySlipName FROM EmployeeMaster e join EmployeeEarnings ee on e.EmpId = ee.EmpId left join EmployeeDeductions ed on e.EmpId = ed.EmpId where e.EmpId = '$empId' and ed.MonthYear = '$monthYear' ";
 $query=mysqli_query($conn,$sql);
 $row = mysqli_fetch_assoc($query);
 
 
 class PDF extends FPDF
 {
+
     function Header()
     {
         // Logo
@@ -33,13 +40,15 @@ class PDF extends FPDF
 
     function Footer()
     {
+        global $line1;
+        global $line2;
         // Position at 1.5 cm from bottom
         $this->SetY(-15);
         $this->SetFont('Times','',12);
-        $this->Cell(95,5,'Graphix - 2, A - 13, 10th Floor,',0);
+        $this->Cell(95,5,$line1,0);
         // $this->Cell(95,5,'ayush.agarwal@trinityapplab.co.in',0,0,'R');
         $this->Ln(5);
-        $this->Cell(95,5,'Sector - 62, Noida - 201301, Uttar Pradesh.',0);
+        $this->Cell(95,5,$line2,0);
         $this->Cell(95,5,'www.trinityapplab.com',0,0,'R');
 
     }
@@ -54,9 +63,9 @@ $pdf->SetDrawColor(0);
 $pdf->SetFont('Times','B',12);
 $pdf->Cell(0,7,'TRINITY MOBILE APP LAB PVT. LTD.',1,0,'C');
 $pdf->Ln(7);
-$pdf->Cell(0,7,'Graphix - 2, A - 13, 10th Floor',1,0,'C');
+$pdf->Cell(0,7,$line1,1,0,'C');
 $pdf->Ln(7);
-$pdf->Cell(0,7,'Sector - 62, Noida - 201301, Uttar Pradesh.',1,0,'C');
+$pdf->Cell(0,7,$line2,1,0,'C');
 $pdf->Ln(7);
 $pdf->SetFont('Times','',12);
 $pdf->Cell(0,7,'Pay Slip for the Month of '.$row["MonthYear"],1,0,'C');
@@ -219,7 +228,7 @@ $dir = "SalarySlip_".$monthYear;
 if (!file_exists('/var/www/trinityapplab.in/html/Company/files/'.$dir)) {
     mkdir('/var/www/trinityapplab.in/html/Company/files/'.$dir, 0777, true);
 }
-$pdfFileName = $row["Mobile"].".pdf";
+$pdfFileName = $row["SalarySlipName"].".pdf";
 $pdf->Output("/var/www/trinityapplab.in/html/Company/files/".$dir."/".$pdfFileName,"F");
 
 // $empName = $row["Name"];

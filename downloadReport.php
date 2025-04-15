@@ -21,7 +21,7 @@ $currentTime = time();
 // // Uptime Report
 // else {
 	if($reportType == 1){
-		$sql = "SELECT EmpId, Name, '' as RetentionBonus, '' as ProfessionTax, '' as OtherDeductions, '' as IncomeTax, '' as OtherTax FROM `EmployeeMaster` where `RoleId` = 2 and `IsActive` = 1";
+		$sql = "SELECT EmpId, Name, '' as TDS, '' as LossOfPay, '' as Reimbursements,  '' as RetentionBonus, '' as ProfessionTax, '' as IncomeTax, '' as OtherTax FROM `EmployeeMaster` where `RoleId` = 2 and `IsActive` = 1";
 		$result = mysqli_query($conn,$sql);
 		$row=mysqli_fetch_assoc($result);
 		$columnName = array();

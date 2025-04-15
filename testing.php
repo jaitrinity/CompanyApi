@@ -1,4 +1,15 @@
 <?php 
+// require 'GenerateSalarySlipClass.php';
+// $classObj = new GenerateSalarySlipClass();
+// $response = $classObj->generateSS('tr014', 'Feb-2025');
+// if($response){
+//     echo "Success";
+// }
+// else{
+//     echo "Fail";
+// }
+
+
 // require 'SendMailClass.php';
 
 // $classObj = new SendMailClass();
@@ -33,11 +44,11 @@
 // $address = $classObj->getAddressByLatLong($lat, $long);
 // echo $address;
 
-// require 'LeaveBalanceClass.php';
-// $classObj = new LeaveBalanceClass();
-// $leaveId = 106;
-// $leaveBalance = $classObj->getLeaveBalance($leaveId);
-// echo $leaveBalance;
+require 'LeaveBalanceClass.php';
+$classObj = new LeaveBalanceClass();
+$leaveId = 106;
+$leaveBalance = $classObj->getLeaveBalance($leaveId);
+echo $leaveBalance;
 
 $randomPassword = randomPassword();
 echo $randomPassword;

@@ -124,7 +124,8 @@ else if($selectType == "deduction"){
 			'otherDeductions' => $row["OtherDeductions"],
 			'incomeTax' => $row["IncomeTax"],
 			'otherTax' => $row["OtherTax"],
-			'reimbursements' => $row["Reimbursements"]
+			'reimbursements' => $row["Reimbursements"],
+			'salarySlipName' => $row["SalarySlipName"]
 		);
 		array_push($deductionList,$json);
 	}
@@ -153,8 +154,8 @@ else if($selectType == "offerLetter"){
 		$address = $addLine1.', '.$addLine2;
 		$designation = $row["Designation"];
 		$doj = $row["DOJ"];
-		$lpa = $row["LPA"];
-		$lpa = moneyFormatIndia($lpa);
+		$lpaOrg = $row["LPA"];
+		$lpa = moneyFormatIndia($lpaOrg);
 		$status = $row["Status"];
 		if($status == 0) $status = "Pending";
 		else if($status == 1) $status = "Approved";
@@ -165,14 +166,30 @@ else if($selectType == "offerLetter"){
 			'name' => $name,
 			'mobile' => $mobile,
 			'emailId' => $emailId,
-			// 'addLine1' => $addLine1,
-			// 'addLine2' => $addLine2,
+			'officeLocation' => $row["OfficeLocation"],
+			'addLine1' => $addLine1,
+			'addLine2' => $addLine2,
 			'address' => $address,
 			'designation' => $designation,
 			'doj' => $doj,
+			'lpaOrg' => $lpaOrg,
 			'lpa' => $lpa,
 			'status' => $status,
-			'offerDate' => $row["OfferDate"]
+			'offerDate' => $row["OfferDate"],
+			'earningsY' => $row["Earnings_Y"],
+			'earningsM' => $row["Earnings_M"],
+			'basicY' => $row["Basic_Y"],
+			'basicM' => $row["Basic_M"],
+			'hraY' => $row["HRA_Y"],
+			'hraM' => $row["HRA_M"],
+			'conveyanceY' => $row["Conveyance_Y"],
+			'conveyanceM' => $row["Conveyance_M"],
+			'laptopY' => $row["Laptop_Y"],
+			'laptopM' => $row["Laptop_M"],
+			'tdsY' => $row["TDS_Y"],
+			'tdsM' => $row["TDS_M"],
+			'netSalaryY' => $row["NetSalary_Y"],
+			'netSalaryM' => $row["NetSalary_M"]
 		);
 		array_push($listArr,$json);
 	}
@@ -954,10 +971,11 @@ else if($selectType == "asset"){
 		}
 
 		$empIds = implode("','", $underEmpList);
-		$filterSql .= " and `EmpId` in ('".$empIds."')";
+		$filterSql .= " and aa.EmpId in ('".$empIds."')";
 	}
 
-	$sql = "SELECT * FROM `AssetAllocation` where 1=1 and `Status` != 10 $filterSql ORDER by `Id` desc";
+	// $sql = "SELECT * FROM `AssetAllocation` where 1=1 and `Status` != 10 $filterSql ORDER by `Id` desc";
+	$sql = "SELECT aa.*, e.Name FROM AssetAllocation aa join EmployeeMaster e on aa.EmpId=e.EmpId  where 1=1 and aa.Status != 10 $filterSql ORDER by aa.Id desc";
 	$query=mysqli_query($conn,$sql);
 	$dataList = array();
 	while($row = mysqli_fetch_assoc($query)){
@@ -1045,7 +1063,7 @@ else if($selectType == "salarySlip"){
 		$filterSql .= " and ed.EmpId in ('".$empIds."')";
 	}
 
-	$sql = "SELECT ed.Id as id, e.Name as name, e.Mobile as mobile, ed.Basic as basic, ed.MonthYear as monthYear, ed.PaidDays as paidDays, ed.AfterLossOfPay as lossOfPay, ed.OtherDeductions as tds, ed.Reimbursements as reimbursements, ed.NetSalary as netSalary FROM EmployeeDeductions ed join EmployeeMaster e on ed.EmpId=e.EmpId and e.IsActive=1 WHERE 1=1  $filterSql order by ed.Id desc";
+	$sql = "SELECT ed.Id as id, e.Name as name, e.Mobile as mobile, ed.Basic as basic, ed.MonthYear as monthYear, ed.PaidDays as paidDays, ed.AfterLossOfPay as lossOfPay, ed.OtherDeductions as tds, ed.Reimbursements as reimbursements, ed.NetSalary as netSalary, ed.SalarySlipName as salarySlipName FROM EmployeeDeductions ed join EmployeeMaster e on ed.EmpId=e.EmpId and e.IsActive=1 WHERE 1=1  $filterSql order by ed.Id desc";
 
 	$query=mysqli_query($conn,$sql);
 	$dataList = array();

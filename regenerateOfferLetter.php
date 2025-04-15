@@ -11,8 +11,7 @@ $json = file_get_contents('php://input');
 $jsonData = json_decode($json);
 $mobile = $jsonData->mobile;
 
-// $sql = "SELECT * FROM `OfferLetter` where `Mobile` = '$mobile'";
-$sql = "SELECT ol.*, om.OfficeTime, om.OfficeAddress FROM OfferLetter ol left join OfficeMaster om on ol.OfficeLocation=om.OfficeLocation where ol.Mobile='$mobile'";
+$sql = "SELECT ol.*, om.OfficeTime, om.OfficeAddress, om.Line1, om.Line2 FROM OfferLetter ol left join OfficeMaster om on ol.OfficeLocation=om.OfficeLocation where ol.Mobile='$mobile'";
 $query = mysqli_query($conn,$sql);
 $row = mysqli_fetch_assoc($query);
 
@@ -38,14 +37,8 @@ $validDate = $expValiDate[0].'th '.$expValiDate[1].' '.$expValiDate[2];
 $intervieweeId = $row["IntervieweeId"];
 $officeTime = $row["OfficeTime"];
 $officeAddress = $row["OfficeAddress"];
-// if($officeLocation == "Noida"){
-//     $officeTime = "9:30 A.M.";
-//     $officeAddress = "Office No: B-417, Noida One, B-8,Sector-62, Noida (UP) - 201309";
-// }
-// else{
-//     $officeTime = "2:00 PM";
-//     $officeAddress = "11th Floor, A- Block, The First, Beside ITC Narmada, Vastrapur, Ahmedabad – 380015";
-// }
+$line1 = $row["Line1"];
+$line2 = $row["Line2"];
 
 class PDF extends PDF_Rotate
 {
@@ -70,13 +63,15 @@ class PDF extends PDF_Rotate
 	}
 	function Footer()
 	{
+        global $line1;
+        global $line2;
 		// Position at 1.5 cm from bottom
     	$this->SetY(-15);
 	    $this->SetFont('Times','',12);
-	    $this->Cell(95,5,'Graphix - 2, A - 13, 10th Floor,',0);
+	    $this->Cell(95,5,$line1,0);
 		$this->Cell(95,5,'ayush.agarwal@trinityapplab.co.in',0,0,'R');
 		$this->Ln(5);
-		$this->Cell(95,5,'Sector - 62, Noida - 201301, Uttar Pradesh.',0);
+		$this->Cell(95,5,$line2,0);
 		$this->Cell(95,5,'www.trinityapplab.com',0,0,'R');
 
 	}
@@ -209,6 +204,115 @@ $pdf->Cell(95,5,'Date',0);
 $pdf->Ln(10);
 $pdf->Cell(95,5,'('.$name.')',0);
 
+// --Salary Break up--
+$pdf->AddPage();
+$pdf->SetTextColor(0);
+$pdf->SetDrawColor(0);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(0,7,'TRINITY MOBILE APP LAB PVT. LTD.',1,0,'C');
+$pdf->Ln(7);
+$pdf->Cell(0,7,$line1,1,0,'C');
+$pdf->Ln(7);
+$pdf->Cell(0,7,$line2,1,0,'C');
+$pdf->Ln(7);
+$pdf->Cell(0,7,'Salary Break up',1,0,'C');
+$pdf->Ln(7);
+$pdf->Ln(7);
+
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'Employee Name',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,$name,1);
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'DOJ',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,$doj,1);
+$pdf->Ln(7);
+
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'Role',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(145,7,$designation,1);
+$pdf->Ln(7);
+$pdf->Ln(7);
+
+$pdf->SetFillColor(255,255,0);
+$pdf->SetTextColor(0,0,0);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(95,7,'Yearly',1,0,'C',true);
+$pdf->Cell(95,7,'Monthly',1,0,'C',true);
+$pdf->Ln(7);
+
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'Earnings',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["Earnings_Y"]),1,0,'R');
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'Earnings',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["Earnings_M"]),1,0,'R');
+$pdf->Ln(7);
+
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'Basic',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["Basic_Y"]),1,0,'R');
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'Basic',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["Basic_M"]),1,0,'R');
+$pdf->Ln(7);
+
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'HRA',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["HRA_Y"]),1,0,'R');
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'HRA',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["HRA_M"]),1,0,'R');
+$pdf->Ln(7);
+
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'Conveyance Allowance',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["Conveyance_Y"]),1,0,'R');
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'Conveyance Allowance',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["Conveyance_M"]),1,0,'R');
+$pdf->Ln(7);
+
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'Laptop Allowance',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["Laptop_Y"]),1,0,'R');
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'Laptop Allowance',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["Laptop_M"]),1,0,'R');
+$pdf->Ln(7);
+
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'TDS',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["TDS_Y"]),1,0,'R');
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'TDS',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["TDS_M"]),1,0,'R');
+$pdf->Ln(7);
+
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'Net Salary',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["NetSalary_Y"]),1,0,'R');
+$pdf->SetFont('Times','',12);
+$pdf->Cell(45,7,'Net Salary',1);
+$pdf->SetFont('Times','B',12);
+$pdf->Cell(50,7,moneyFormatIndia($row["NetSalary_M"]),1,0,'R');
+$pdf->Ln(7);
+
 
 // $pdf->Output();
 $dir = "OfferLetter";
@@ -241,9 +345,9 @@ if($intervieweeId != "0"){
 // $msg .= "Trinity Automation Team.";
 $msg .= "</body></html>";
 
-$subject = "Offer Letter";
+$subject = "Regenerate Offer Letter";
 // $classObj = new SendMailClass();
-// $response = $classObj->sendMailOfferLetter($toMailId, $subject, $msg, "/var/www/trinityapplab.in/html/Company/files/".$dir."/".$pdfFileName);
+// $response = $classObj->sendLeaveMailJustMe($toMailId, $subject, $msg, "/var/www/trinityapplab.in/html/Company/files/".$dir."/".$pdfFileName);
 $response = true;
 
 $output = "";

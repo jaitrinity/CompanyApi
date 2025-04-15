@@ -10,12 +10,12 @@ class SendMailClass{
 	    $mail->isSMTP();                                      
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
-	    $mail->Username = '[emailId]';
-	    $mail->Password = '[password]';   
+	    $mail->Username = 'communication@trinityapplab.co.in';
+	    $mail->Password = 'ouxjcbqxcurarzhq';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
 	    
-	    $mail->setFrom("[emailId]","Trinity");
+	    $mail->setFrom("communication@trinityapplab.co.in","Trinity");
 	    $mail->addAttachment($attachment);
 	    $mail->isHTML(true);   
 
@@ -58,12 +58,12 @@ class SendMailClass{
 	    $mail->isSMTP();                                      
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
-	    $mail->Username = '[emailId]';
-	    $mail->Password = '[password]';   
+	    $mail->Username = 'communication@trinityapplab.co.in';
+	    $mail->Password = 'ouxjcbqxcurarzhq';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
 	    
-	    $mail->setFrom("[emailId]","Trinity");
+	    $mail->setFrom("communication@trinityapplab.co.in","Trinity");
 	    $mail->addAttachment($attachment);
 	    $mail->isHTML(true);   
 
@@ -101,8 +101,8 @@ class SendMailClass{
 	    $mail->isSMTP();                                      
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
-	    $mail->Username = '[emailId]';
-	    $mail->Password = '[password]';   
+	    $mail->Username = 'communication@trinityapplab.co.in';
+	    $mail->Password = 'ouxjcbqxcurarzhq';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
 	    
@@ -113,7 +113,7 @@ class SendMailClass{
 	    	$mail->addAddress($toMailId);
 	    }
 	    // $mail->addAddress("pushkar.tyagi@trinityapplab.co.in");
-	    $mail->setFrom("[emailId]","Trinity");
+	    $mail->setFrom("communication@trinityapplab.co.in","Trinity");
 	    $mail->addAttachment($attachment);
 	    $mail->isHTML(true);   
 
@@ -153,15 +153,15 @@ class SendMailClass{
 	    $mail->isSMTP();                                      
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
-	    $mail->Username = '[emailId]';
-	    $mail->Password = '[password]';   
+	    $mail->Username = 'communication@trinityapplab.co.in';
+	    $mail->Password = 'ouxjcbqxcurarzhq';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
 	    
 	    // To mail's
 	    $mail->addAddress($toMailId);
 	    
-	    $mail->setFrom("[emailId]","Trinity");
+	    $mail->setFrom("communication@trinityapplab.co.in","Trinity");
 	    $mail->addAttachment($attachment);
 	    $mail->isHTML(true);   
 
@@ -196,8 +196,8 @@ class SendMailClass{
 	    $mail->isSMTP();                                      
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
-	    $mail->Username = '[emailId]';
-	    $mail->Password = '[password]';   
+	    $mail->Username = 'communication@trinityapplab.co.in';
+	    $mail->Password = 'ouxjcbqxcurarzhq';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
 	    
@@ -205,7 +205,7 @@ class SendMailClass{
 	    $mail->addAddress($toMailId);
 	    // $mail->addAddress("pushkar.tyagi@trinityapplab.co.in");
 	    
-	    $mail->setFrom("[emailId]","Trinity");
+	    $mail->setFrom("communication@trinityapplab.co.in","Trinity");
 	    $mail->addAttachment($attachment);
 	    $mail->isHTML(true);   
 
@@ -239,15 +239,15 @@ class SendMailClass{
 	    $mail->isSMTP();                                      
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
-	    $mail->Username = '[emailId]';
-	    $mail->Password = '[password]';   
+	    $mail->Username = 'communication@trinityapplab.co.in';
+	    $mail->Password = 'ouxjcbqxcurarzhq';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
 	    
 	    // To mail's
 	    $mail->addAddress($toMailId);
 	    
-	    $mail->setFrom("[emailId]","Trinity");
+	    $mail->setFrom("communication@trinityapplab.co.in","Trinity");
 	    $mail->addAttachment($attachment);
 	    $mail->isHTML(true);   
 

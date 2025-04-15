@@ -110,7 +110,11 @@ else if($updateType == "updateEmployee" && $methodType === 'POST'){
     $mobile = $jsonData->mobile;
     $emailId = $jsonData->emailId;
     $dob = $jsonData->dob;
+    $dob = str_replace('/', '-', $dob);
+    $dob = date("Y-m-d", strtotime($dob));
     $doj = $jsonData->doj;
+    $doj = str_replace('/', '-', $doj);
+    $doj = date("Y-m-d", strtotime($doj));
     $leaveBalance = $jsonData->leaveBalance;
     $basic = $jsonData->basic;
     $hra = $jsonData->hra;
@@ -187,6 +191,50 @@ else if($updateType == "complaintStatus" && $methodType === 'POST'){
         $output -> responseCode = "100000";
         $output -> responseDesc = "Successfully update";
 
+    }
+    else{
+        $output -> responseCode = "0";
+        $output -> responseDesc = "Something wrong";
+    }
+    echo json_encode($output);
+}
+else if($updateType == "offerLetter" && $methodType === 'POST'){
+    $id = $jsonData->id;
+    $name = $jsonData->name;
+    $mobile = $jsonData->mobile;
+    $emailId = $jsonData->emailId;
+    $officeLocation = $jsonData->officeLocation;
+    $addLine1 = $jsonData->addLine1;
+    $addLine2 = $jsonData->addLine2;
+    $designation = $jsonData->designation;
+    $doj = $jsonData->doj;
+    $doj = str_replace('/', '-', $doj);
+    $doj = date("Y-m-d", strtotime($doj));
+    $lpa = $jsonData->lpa;
+    $earningsY = $jsonData->earningsY;
+    $basicY = $jsonData->basicY;
+    $hraY = $jsonData->hraY;
+    $conveyanceY = $jsonData->conveyanceY;
+    $laptopY = $jsonData->laptopY;
+    $tdsY = $jsonData->tdsY;
+    $netSalaryY = $jsonData->netSalaryY;
+    $earningsM = $jsonData->earningsM;
+    $basicM = $jsonData->basicM;
+    $hraM = $jsonData->hraM;
+    $conveyanceM = $jsonData->conveyanceM;
+    $laptopM = $jsonData->laptopM;
+    $tdsM = $jsonData->tdsM;
+    $netSalaryM = $jsonData->netSalaryM;
+
+    $updateOffer = "UPDATE `OfferLetter` set `Name`='$name', `Mobile`='$mobile', `EmailId`='$emailId', `OfficeLocation`='$officeLocation', `AddressLine1`='$addLine1', `AddressLine2`='$addLine2', `Designation`='$designation', `DOJ`='$doj', `LPA`='$lpa', `Earnings_Y`=$earningsY, `Earnings_M`=$earningsM, `Basic_Y`=$basicY, `Basic_M`=$basicM, `HRA_Y`=$hraY, `HRA_M`=$hraM, `Conveyance_Y`=$conveyanceY, `Conveyance_M`=$conveyanceM, `Laptop_Y`=$laptopY, `Laptop_M`=$laptopM, `TDS_Y`=$tdsY, `TDS_M`=$tdsM, `NetSalary_Y`=$netSalaryY, `NetSalary_M`=$netSalaryM WHERE `Id`=$id";
+
+    // echo $updateOffer;
+
+    $output = "";
+    if(mysqli_query($conn,$updateOffer)){
+        $output -> responseCode = "100000";
+        $output -> responseDesc = "Successfully update";   
+            
     }
     else{
         $output -> responseCode = "0";

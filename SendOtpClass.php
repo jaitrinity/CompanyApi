@@ -1,7 +1,7 @@
 <?php
 class SendOtpClass{
 	function sendOtp($mobile, $otp, $appName){
-		$authorization = "[authorization]";
+		$authorization = "CaNp52fZ413bDQgqJkYMXWU0dcLBPyOsiRmVlS7T6n9AxrohFviduS5EpylBXaU32R47fW9kqsFMDoZG";
 		$route="dlt";
 		$senderId="TRIAPP";
 		$messageId="180712";
