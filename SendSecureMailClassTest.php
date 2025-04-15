@@ -9,8 +9,8 @@ class SendSecureMailClassTest{
 	    $mail->isSMTP();                                      
 	    $mail->Host = 'smtp.gmail.com';
 	    $mail->SMTPAuth = true;
-	    $mail->Username = 'communication@trinityapplab.co.in';
-	    $mail->Password = 'communication@Trinity';   
+	    $mail->Username = '[Username]';
+	    $mail->Password = '[Password]';   
 	    $mail->Port = 587;
 	    $mail->SMTPSecure = 'tls';
 	    
@@ -18,7 +18,7 @@ class SendSecureMailClassTest{
 	    $mail->addAddress($toMailId);
 	    // $mail->addAddress("pushkar.tyagi@trinityapplab.co.in");
 	    
-	    $mail->setFrom("communication@trinityapplab.co.in","Trinity");
+	    $mail->setFrom("[from_emailId]","Trinity");
 	    $mail->addCustomHeader('Confidential', 'on');
 	    $mail->addCustomHeader('expiry', '1d');
 	    $mail->addAttachment($attachment);
