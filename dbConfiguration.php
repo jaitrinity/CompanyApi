@@ -1,8 +1,11 @@
 <?php
-$DB_HOST = getenv('DB_HOST');
-$DB_USER = getenv('DB_USER');
-$DB_PASS = getenv('DB_PASS');
-$DB_NAME = getenv('DB_NAME');
+$env = parse_ini_file(__DIR__.'/.env');
+
+$DB_HOST = $env['DB_HOST'];
+$DB_USER = $env['DB_USER'];
+$DB_PASS = $env['DB_PASS'];
+$DB_NAME = $env['DB_NAME'];
+
 
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
