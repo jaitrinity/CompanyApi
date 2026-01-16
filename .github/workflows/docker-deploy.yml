@@ -33,4 +33,4 @@ jobs:
           docker pull ${{ secrets.DOCKER_USERNAME }}/company-api:latest
           docker stop company-api || true
           docker rm company-api || true
-          docker run -d -p 8080:80 --name company-api ${{ secrets.DOCKER_USERNAME }}/company-api:latest
+          docker run -d -p 8081:80 --name company-api ${{ secrets.DOCKER_USERNAME }}/company-api:latest
