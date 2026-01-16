@@ -8,7 +8,6 @@ RUN docker-php-ext-install mysqli pdo pdo_mysql
 
 # Copy app
 COPY . /var/www/html/
-COPY .env /var/www/html/.env
 
 # Permissions
 RUN chown -R www-data:www-data /var/www/html
